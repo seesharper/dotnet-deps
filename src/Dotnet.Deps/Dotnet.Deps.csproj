@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.5.1" />
+    <PackageReference Include="NuGet.Configuration" Version="5.4.0" />
+    <PackageReference Include="NuGet.Packaging" Version="5.4.0" />
+    <PackageReference Include="NuGet.Packaging.Core" Version="5.4.0" />
+    <PackageReference Include="NuGet.Packaging.Core.Types" Version="4.2.0" />
+    <PackageReference Include="NuGet.Protocol.Core.v3" Version="4.2.0" />
+    <PackageReference Include="simpleexec" Version="6.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Dotnet.Deps.Core\Dotnet.Deps.Core.csproj" />
+  </ItemGroup>
+
+</Project>
