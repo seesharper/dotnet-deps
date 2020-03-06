@@ -9,13 +9,29 @@ namespace Dotnet.Deps.Tests
 {
     public partial class UnitTest1
     {
-        public class TestCase
+        public abstract class TestCase
         {
-            private List<(string name, string version)> packageReferences = new List<(string name, string version)>();
+            protected List<(string name, string version)> packageReferences = new List<(string name, string version)>();
+            protected List<(string name, string value)> properties = new List<(string name, string value)>();
+
+            private ProjectFileTemplate projectFileTemplate = ProjectFileTemplates.MsBuild;
 
             public TestCase AddPackage(string name, string version = "")
             {
                 packageReferences.Add((name, version));
+                return this;
+            }
+
+            public TestCase AddProperty(string name, string value)
+            {
+                properties.Add((name, value));
+                return this;
+            }
+
+
+            public TestCase WithTemplate(ProjectFileTemplate projectFileTemplate)
+            {
+                this.projectFileTemplate = projectFileTemplate;
                 return this;
             }
 
@@ -41,9 +57,23 @@ namespace Dotnet.Deps.Tests
                 }
             }
 
-            private string CreateProjectFile()
+            protected abstract string CreateProjectFile();
+
+        }
+
+        public class MsBuildTestCase : TestCase
+        {
+            private const string msBuildProjectFile = @"
+<Project Sdk=""Microsoft.NET.Sdk"">
+  <PropertyGroup>
+  </PropertyGroup>
+  <ItemGroup>
+  </ItemGroup>
+</Project>";
+
+            protected override string CreateProjectFile()
             {
-                XDocument projectFile = XDocument.Parse(Templates.MsBuildProjectFile);
+                XDocument projectFile = XDocument.Parse(msBuildProjectFile);
                 var itemGroupElement = projectFile.Descendants("ItemGroup").Single();
                 foreach (var packageReference in packageReferences)
                 {
@@ -57,10 +87,38 @@ namespace Dotnet.Deps.Tests
                         var packageElement = new XElement("PackageReference", new XAttribute("Include", packageReference.name), new XAttribute("Version", packageReference.version));
                         itemGroupElement.Add(packageElement);
                     }
-
                 }
+
+                var propertyGroupElement = projectFile.Descendants("PropertyGroup").Single();
+                foreach (var property in properties)
+                {
+                    propertyGroupElement.Add(new XElement(property.name, property.value));
+                }
+
                 return projectFile.ToString();
             }
         }
+
+        // public class PropsTestCase : TestCase
+        // {
+        //     private
+
+
+        //     protected override string CreateProjectFile()
+        //     {
+        //         XDocument projectFile = XDocument.Parse(msBuildProjectFile);
+        //         var itemGroupElement = projectFile.Descendants("ItemGroup").Single();
+        //         foreach (var packageReference in packageReferences)
+        //         {
+        //             {
+        //                 var packageElement = new XElement("PackageReference", new XAttribute("Update", packageReference.name), new XAttribute("Version", packageReference.version));
+        //                 itemGroupElement.Add(packageElement);
+        //             }
+
+        //         }
+        //         return projectFile.ToString();
+        //     }
+        // }
+
     }
 }

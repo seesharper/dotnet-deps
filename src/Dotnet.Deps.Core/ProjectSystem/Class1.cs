@@ -1,52 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml.Linq;
 using Dotnet.Deps.Core;
-using NuGet.Versioning;
 
 namespace Dotnet.Deps.ProjectSystem
 {
-
-    public class MsBuildProjectLoader : IProjectLoader
-    {
-        private readonly AppConsole console;
-
-        public MsBuildProjectLoader(AppConsole console)
-        {
-            this.console = console;
-        }
-
-        public string FileExtension { get => "csproj"; }
-
-        public IProjectFile Load(string path)
-        {
-            var projectFile = XDocument.Load(path);
-            var packageReferenceElements = projectFile.Descendants("PackageReference");
-            var packageReferences = new List<NuGetPackageReference>();
-            foreach (var packageReferenceElement in packageReferenceElements)
-            {
-                var packageName = packageReferenceElement.Attribute("Include").Value;
-                var packageVersion = packageReferenceElement.Attribute("Version")?.Value;
-                if (packageVersion == null)
-                {
-                    continue;
-                }
-                if (FloatRange.TryParse(packageVersion, out var floatRange))
-                {
-                    var nugetVersion = floatRange.MinVersion;
-                    var nugetPackageReference = new MsBuildPackageReference(packageName, packageVersion, floatRange.MinVersion, floatRange.FloatBehavior, packageReferenceElement);
-                    packageReferences.Add(nugetPackageReference);
-                }
-                else
-                {
-                    console.WriteError($"Warning: The package '{packageName}' has an invalid version number '{packageVersion}'");
-                }
-            }
-
-            return new MsBuildProjectFile(projectFile, path, packageReferences.ToArray());
-        }
-    }
 
     public interface IProjectCollectionLoader
     {

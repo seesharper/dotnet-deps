@@ -8,7 +8,7 @@ namespace Dotnet.Deps.Tests
         [Fact]
         public void ShouldListOutdatedDependency()
         {
-            var result = new TestCase()
+            var result = new MsBuildTestCase()
                 .AddPackage("LightInject", "5.1.0")
                 .Execute();
             result.StandardOut.Should().Contain("LightInject 5.1.0 =>");
@@ -18,7 +18,7 @@ namespace Dotnet.Deps.Tests
         [Fact]
         public void ShouldUpdateToLatestVersion()
         {
-            var result = new TestCase()
+            var result = new MsBuildTestCase()
                 .AddPackage("LightInject", "5.1.0")
                 .Execute("update");
             result.ProjectFile.ShouldHavePackageReferenceWithLatestVersion("LightInject", "5.1.0");
@@ -27,7 +27,7 @@ namespace Dotnet.Deps.Tests
         [Fact]
         public void ShouldHandleInvalidVersionNumber()
         {
-            var result = new TestCase()
+            var result = new MsBuildTestCase()
                 .AddPackage("LightInject", "Rubbish")
                 .Execute();
             result.StandardOut.Should().Contain("Warning");
@@ -36,10 +36,29 @@ namespace Dotnet.Deps.Tests
         [Fact]
         public void ShouldIgnorePackageWithMissingVersionNumber()
         {
-            var result = new TestCase()
+            var result = new MsBuildTestCase()
                 .AddPackage("LightInject")
                 .Execute();
             result.StandardOut.Should().NotContain("LightInject 5.1.0 =>");
+        }
+
+        [Fact]
+        public void ShouldHandleVersionNumberAsVariable()
+        {
+            var result = new MsBuildTestCase()
+                .AddPackage("LightInject", "$(LightInjectVersion)")
+                .AddProperty("LightInjectVersion", "5.1.0")
+                .Execute();
+
+            result.StandardOut.Should().Contain("LightInject 5.1.0 =>");
+        }
+
+        [Fact]
+        public void ShouldListPackagesFromPropsFile()
+        {
+            var result = new MsBuildTestCase()
+                .AddPackage("LightInject")
+                .Execute();
         }
     }
 }
