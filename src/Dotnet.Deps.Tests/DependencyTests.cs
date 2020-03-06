@@ -25,6 +25,15 @@ namespace Dotnet.Deps.Tests
         }
 
         [Fact]
+        public void ShouldListFloatingDependency()
+        {
+            var result = new MsBuildTestCase()
+               .AddPackage("LightInject", "6.*")
+               .Execute();
+        }
+
+
+        [Fact]
         public void ShouldHandleInvalidVersionNumber()
         {
             var result = new MsBuildTestCase()

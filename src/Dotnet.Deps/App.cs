@@ -14,7 +14,7 @@ using NuGet.Common;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
-using Dotnet.Deps.ProjectSystem;
+using Dotnet.Deps.Core.ProjectSystem;
 
 namespace Dotnet.Deps
 {

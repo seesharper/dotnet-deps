@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System.Xml.Linq;
-using Dotnet.Deps.Core;
-using NuGet.Versioning;
 
-namespace Dotnet.Deps.ProjectSystem
+namespace Dotnet.Deps.Core.ProjectSystem
 {
     public class MsBuildProjectLoader : IProjectLoader
     {
@@ -14,34 +12,49 @@ namespace Dotnet.Deps.ProjectSystem
             this.console = console;
         }
 
-        public string FileExtension { get => "csproj"; }
+        public string FileExtensions { get => "csproj;props;target"; }
 
         public IProjectFile Load(string path)
         {
             var projectFile = XDocument.Load(path);
+            var msBuildProjectFile = new MsBuildProjectFile(projectFile, path);
             var packageReferenceElements = projectFile.Descendants("PackageReference");
-            var packageReferences = new List<NuGetPackageReference>();
+            var packageReferences = new List<PackageReference>();
             foreach (var packageReferenceElement in packageReferenceElements)
             {
-                var packageName = packageReferenceElement.Attribute("Include").Value;
+                var packageName = packageReferenceElement.Attribute("Include")?.Value;
+                if (packageName == null)
+                {
+                    packageName = packageReferenceElement.Attribute("Update")?.Value;
+                }
+                if (string.IsNullOrWhiteSpace(packageName))
+                {
+                    continue;
+                }
+
                 var packageVersion = packageReferenceElement.Attribute("Version")?.Value;
                 if (packageVersion == null)
                 {
                     continue;
                 }
-                if (FloatRange.TryParse(packageVersion, out var floatRange))
-                {
-                    var nugetVersion = floatRange.MinVersion;
-                    var nugetPackageReference = new MsBuildPackageReference(packageName, packageVersion, floatRange.MinVersion, floatRange.FloatBehavior, packageReferenceElement);
-                    packageReferences.Add(nugetPackageReference);
-                }
-                else
-                {
-                    console.WriteError($"Warning: The package '{packageName}' has an invalid version number '{packageVersion}'");
-                }
+
+                var usesVariable = packageVersion.StartsWith("$");
+
+                packageReferences.Add(new PackageReference(packageName, packageVersion, usesVariable));
+
+                // if (FloatRange.TryParse(packageVersion, out var floatRange))
+                // {
+                //     var nugetVersion = floatRange.MinVersion;
+                //     var nugetPackageReference = new MsBuildPackageReference(packageName, packageVersion, floatRange.MinVersion, floatRange.FloatBehavior, packageReferenceElement);
+                //     packageReferences.Add(nugetPackageReference);
+                // }
+                // else
+                // {
+                //     console.WriteError($"Warning: The package '{packageName}' has an invalid version number '{packageVersion}'");
+                // }
             }
 
-            var properties = new Dictionary<string, MsBuildProperty>();
+            var properties = new List<Property>();
             var propertyGroups = projectFile.Descendants("PropertyGroup");
             foreach (var propertyGroup in propertyGroups)
             {
@@ -50,15 +63,14 @@ namespace Dotnet.Deps.ProjectSystem
                     var value = propertyElement.Value;
                     var isVariable = propertyElement.Value.Trim().StartsWith("$");
                     var name = propertyElement.Name.LocalName;
-
-                    if (!properties.ContainsKey(name))
-                    {
-                        properties.Add(name, new MsBuildProperty(name, value, isVariable));
-                    }
+                    properties.Add(new Property(name, value, isVariable, msBuildProjectFile));
                 }
             }
 
-            return new MsBuildProjectFile(projectFile, path, packageReferences.ToArray(), properties);
+            msBuildProjectFile.PackageReferences = packageReferences.ToArray();
+            msBuildProjectFile.Properties = properties.ToArray();
+
+            return msBuildProjectFile;
         }
     }
 

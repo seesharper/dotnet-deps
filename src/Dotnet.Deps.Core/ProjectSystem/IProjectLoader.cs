@@ -1,4 +1,4 @@
-namespace Dotnet.Deps.ProjectSystem
+namespace Dotnet.Deps.Core.ProjectSystem
 {
     /// <summary>
     /// Represents a class that is capable of loading an <see cref="IProjectFile"/>.
@@ -15,7 +15,7 @@ namespace Dotnet.Deps.ProjectSystem
         /// <summary>
         /// Gets the file extension for the type of projects to be loaded.
         /// </summary>
-        string FileExtension { get; }
+        string FileExtensions { get; }
     }
 
 }

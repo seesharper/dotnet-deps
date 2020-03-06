@@ -1,6 +1,6 @@
 using NuGet.Versioning;
 
-namespace Dotnet.Deps.ProjectSystem
+namespace Dotnet.Deps.Core.ProjectSystem
 {
     /// <summary>
     /// Represents a NuGet package reference

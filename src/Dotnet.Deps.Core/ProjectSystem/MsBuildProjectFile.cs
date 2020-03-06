@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Xml.Linq;
 
-namespace Dotnet.Deps.ProjectSystem
+namespace Dotnet.Deps.Core.ProjectSystem
 {
     /// <summary>
     /// Represents a MsBuild SDK-style project file.
@@ -11,36 +11,31 @@ namespace Dotnet.Deps.ProjectSystem
         private readonly XDocument msBuildProjectFile;
         private readonly string path;
 
-        public MsBuildProjectFile(XDocument msBuildProjectFile, string path, NuGetPackageReference[] nuGetPackageReferences, IDictionary<string, MsBuildProperty> properties)
+        public MsBuildProjectFile(XDocument msBuildProjectFile, string path)
         {
             this.msBuildProjectFile = msBuildProjectFile;
             this.path = path;
-            NuGetPackageReferences = nuGetPackageReferences;
-            Properties = properties;
         }
 
-        public NuGetPackageReference[] NuGetPackageReferences { get; }
+        public PackageReference[] PackageReferences { get; set; }
 
-        public IDictionary<string, MsBuildProperty> Properties { get; }
+        public Property[] Properties { get; set; }
 
         public void Save()
         {
-            foreach (var nuGetPackageReference in NuGetPackageReferences)
-            {
-                // Update the package versions.
-            }
             msBuildProjectFile.Save(path);
         }
     }
 
 
-    public class MsBuildProperty
+    public class Property
     {
-        public MsBuildProperty(string name, string value, bool isVariable)
+        public Property(string name, string value, bool isVariable, IProjectFile projectFile)
         {
             Name = name;
             Value = value;
             IsVariable = isVariable;
+            ProjectFile = projectFile;
         }
 
         public string Name { get; }
@@ -48,5 +43,8 @@ namespace Dotnet.Deps.ProjectSystem
         public string Value { get; }
 
         public bool IsVariable { get; }
+
+
+        public IProjectFile ProjectFile { get; }
     }
 }
