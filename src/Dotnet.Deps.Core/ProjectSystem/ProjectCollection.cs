@@ -23,7 +23,7 @@ namespace Dotnet.Deps.Core.ProjectSystem
             var property = ProjectFiles.SelectMany(pf => pf.Properties).FirstOrDefault(p => p.Name == propertyName);
             if (property == null)
             {
-                throw new InvalidOperationException("Property not found");
+                throw new InvalidOperationException("Property not found " + name);
             }
 
             if (property.IsVariable)

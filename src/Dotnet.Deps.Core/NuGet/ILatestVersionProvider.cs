@@ -32,7 +32,7 @@ namespace Dotnet.Deps.Core.NuGet
 
             var result = new ConcurrentBag<LatestVersion>();
 
-            await Task.WhenAll(packageNames.Select(name => GetLatestVersion(name, preRelease, sourceRepositories, result)));
+            await Task.WhenAll(packageNames.Select(name => GetLatestVersion(name, preRelease, sourceRepositories, result))).ConfigureAwait(false);
 
             return result.ToDictionary(v => v.PackageName);
         }
@@ -60,7 +60,7 @@ namespace Dotnet.Deps.Core.NuGet
             return new SourceRepositoryProvider(settings, Repository.Provider.GetCoreV3());
         }
 
-        private static async Task GetLatestVersion(string packageName, bool preRelease, SourceRepository[] repositories, ConcurrentBag<LatestVersion> result)
+        private async Task GetLatestVersion(string packageName, bool preRelease, SourceRepository[] repositories, ConcurrentBag<LatestVersion> result)
         {
             List<LatestVersion> allLatestVersions = new List<LatestVersion>();
             foreach (var repository in repositories)

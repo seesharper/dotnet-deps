@@ -34,31 +34,36 @@ namespace Dotnet.Deps.Core.Commands
 
             foreach (var projectFile in projectCollection.ProjectFiles)
             {
+                console.WriteHeader(projectFile.Path);
                 foreach (var packageReference in projectFile.PackageReferences)
                 {
                     string packageVersion = null;
 
-                    if (packageReference.UsesVariable)
-                    {
-                        var property = projectCollection.EvaluateVariable(packageReference.Version);
-                        packageVersion = property.Value;
-                    }
-                    else
-                    {
-                        packageVersion = packageReference.Version;
-                    }
+                    // if (packageReference.UsesVariable)
+                    // {
+                    //     var property = projectCollection.EvaluateVariable(packageReference.Version);
+                    //     packageVersion = property.Value;
+                    // }
+                    // else
+                    // {
+                    packageVersion = packageReference.Version;
+                    //}
 
                     if (FloatRange.TryParse(packageVersion, out var floatRange))
                     {
                         if (latestVersions.TryGetValue(packageReference.Name, out var latestVersion))
                         {
-                            if (floatRange.Satisfies(latestVersion.NugetVersion))
+                            if (!latestVersion.IsValid)
+                            {
+                                continue;
+                            }
+                            if (!floatRange.Satisfies(latestVersion.NugetVersion))
                             {
                                 console.WriteHighlighted($"{packageReference.Name} {packageReference.Version} => {latestVersion.NugetVersion} ({latestVersion.Feed}) 😢");
                             }
                             else
                             {
-                                console.WriteSuccess($"{packageReference.Name} {packageReference.Version} (Feed: {latestVersion.Feed}) 🍺");
+                                console.WriteSuccess($"{packageReference.Name} {packageReference.Version} {latestVersion.NugetVersion} ({latestVersion.Feed}) 🍺");
                             }
                         }
                     }

@@ -40,13 +40,15 @@ namespace Dotnet.Deps.Tests
                 var stdOut = new StringBuilder();
                 var stdErr = new StringBuilder();
 
-                var app = new App(new AppConsole(new StringWriter(stdOut), new StringWriter(stdErr)));
+                //var app = new App(new AppConsole(new StringWriter(stdOut), new StringWriter(stdErr)));
+                var app = new App(AppConsole.Default);
 
                 using (var projectFolder = new DisposableFolder())
                 {
                     List<string> allArgs = new List<string>();
                     allArgs.Add("-cwd");
-                    allArgs.Add(projectFolder.Path);
+                    allArgs.Add("/Users/bernhardrichter/GitHub/omnisharp-roslyn");
+                    // allArgs.Add(projectFolder.Path);
                     allArgs.AddRange(args);
 
                     var projectFileContent = CreateProjectFile();

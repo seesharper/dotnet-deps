@@ -17,8 +17,13 @@ namespace Dotnet.Deps.Core.ProjectSystem
         public IProjectFile Load(string path)
         {
             var projectFile = XDocument.Load(path);
+            var nameSpace = projectFile.Root.Name.Namespace;
+            if (path.EndsWith("Packages.props"))
+            {
+
+            }
             var msBuildProjectFile = new MsBuildProjectFile(projectFile, path);
-            var packageReferenceElements = projectFile.Descendants("PackageReference");
+            var packageReferenceElements = projectFile.Descendants(nameSpace + "PackageReference");
             var packageReferences = new List<PackageReference>();
             foreach (var packageReferenceElement in packageReferenceElements)
             {
@@ -33,7 +38,7 @@ namespace Dotnet.Deps.Core.ProjectSystem
                 }
 
                 var packageVersion = packageReferenceElement.Attribute("Version")?.Value;
-                if (packageVersion == null)
+                if (packageVersion == null || packageVersion.StartsWith("$"))
                 {
                     continue;
                 }
@@ -55,7 +60,7 @@ namespace Dotnet.Deps.Core.ProjectSystem
             }
 
             var properties = new List<Property>();
-            var propertyGroups = projectFile.Descendants("PropertyGroup");
+            var propertyGroups = projectFile.Descendants(nameSpace + "PropertyGroup");
             foreach (var propertyGroup in propertyGroups)
             {
                 foreach (var propertyElement in propertyGroup.Descendants())

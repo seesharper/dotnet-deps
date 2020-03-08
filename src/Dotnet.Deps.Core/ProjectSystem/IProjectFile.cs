@@ -17,6 +17,8 @@ namespace Dotnet.Deps.Core.ProjectSystem
         /// Saves the project file.
         /// </summary>
         void Save();
+
+        string Path { get; }
     }
 
 }

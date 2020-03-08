@@ -25,15 +25,15 @@ namespace Dotnet.Deps.Core.ProjectSystem
                 var projectFiles = Directory.GetFiles(workingDirectory, $"*.{fileExtension}", SearchOption.AllDirectories);
                 foreach (var projectFile in projectFiles)
                 {
-                    if (projectFile.EndsWith("nuget.g.props"))
-                    {
-                        continue;
-                    }
                     console.WriteNormal($"Analyzing {projectFile}");
                     try
                     {
                         var project = projectLoader.Load(projectFile);
-                        result.Add(project);
+                        if (project.PackageReferences.Length > 0)
+                        {
+                            result.Add(project);
+                        }
+
                     }
                     catch (System.Exception)
                     {

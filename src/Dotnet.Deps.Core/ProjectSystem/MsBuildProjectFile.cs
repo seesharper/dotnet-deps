@@ -9,21 +9,22 @@ namespace Dotnet.Deps.Core.ProjectSystem
     public class MsBuildProjectFile : IProjectFile
     {
         private readonly XDocument msBuildProjectFile;
-        private readonly string path;
+
 
         public MsBuildProjectFile(XDocument msBuildProjectFile, string path)
         {
             this.msBuildProjectFile = msBuildProjectFile;
-            this.path = path;
+            Path = path;
         }
 
         public PackageReference[] PackageReferences { get; set; }
 
         public Property[] Properties { get; set; }
+        public string Path { get; }
 
         public void Save()
         {
-            msBuildProjectFile.Save(path);
+            msBuildProjectFile.Save(Path);
         }
     }
 
