@@ -7,18 +7,17 @@ namespace Dotnet.Deps.Core.ProjectSystem
     /// </summary>
     public abstract class NuGetPackageReference
     {
-        public NuGetPackageReference(string name, string versionString, NuGetVersion nuGetVersion, NuGetVersionFloatBehavior floatBehavior)
+        public NuGetPackageReference(string name, string version, FloatRange floatRange)
         {
             Name = name;
-            VersionString = versionString;
-            NuGetVersion = nuGetVersion;
-            FloatBehavior = floatBehavior;
+            Version = version;
+            FloatRange = floatRange;
         }
 
         public string Name { get; }
-        public string VersionString { get; }
-        public NuGetVersion NuGetVersion { get; }
-        public NuGetVersionFloatBehavior FloatBehavior { get; }
+        public string Version { get; }
+        public FloatRange FloatRange { get; }
+
         public abstract void Update(string newVersion);
     }
 

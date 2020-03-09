@@ -7,6 +7,7 @@ using NuGet.Common;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
+using ShellProgressBar;
 
 namespace Dotnet.Deps.Core.NuGet
 {
@@ -32,7 +33,24 @@ namespace Dotnet.Deps.Core.NuGet
 
             var result = new ConcurrentBag<LatestVersion>();
 
-            await Task.WhenAll(packageNames.Select(name => GetLatestVersion(name, preRelease, sourceRepositories, result))).ConfigureAwait(false);
+            int totalTicks = packageNames.Length;
+            var options = new ProgressBarOptions
+            {
+                ProgressCharacter = '─',
+                ProgressBarOnBottom = true
+            };
+
+            using (var progressBar = new ProgressBar(totalTicks, "Getting latest package versions", options))
+            {
+                await Task.WhenAll(packageNames.Select(name => GetLatestVersion(name, preRelease, sourceRepositories, result, progressBar))).ConfigureAwait(false);
+
+                // progressBar.Tick(); //will advance pbar to 1 out of 10.
+                //                     //we can also advance and update the progressbar text
+                // progressBar.Tick("Step 2 of 10");
+            }
+
+
+
 
             return result.ToDictionary(v => v.PackageName);
         }
@@ -60,7 +78,7 @@ namespace Dotnet.Deps.Core.NuGet
             return new SourceRepositoryProvider(settings, Repository.Provider.GetCoreV3());
         }
 
-        private async Task GetLatestVersion(string packageName, bool preRelease, SourceRepository[] repositories, ConcurrentBag<LatestVersion> result)
+        private async Task GetLatestVersion(string packageName, bool preRelease, SourceRepository[] repositories, ConcurrentBag<LatestVersion> result, ProgressBar progressBar)
         {
             List<LatestVersion> allLatestVersions = new List<LatestVersion>();
             foreach (var repository in repositories)
@@ -91,6 +109,7 @@ namespace Dotnet.Deps.Core.NuGet
             {
                 result.Add(allLatestVersions.OrderBy(lv => lv.NugetVersion).Last());
             }
+            progressBar.Tick(packageName);
         }
     }
 }

@@ -38,16 +38,8 @@ namespace Dotnet.Deps.Core.Commands
                 foreach (var packageReference in projectFile.PackageReferences)
                 {
                     string packageVersion = null;
-
-                    // if (packageReference.UsesVariable)
-                    // {
-                    //     var property = projectCollection.EvaluateVariable(packageReference.Version);
-                    //     packageVersion = property.Value;
-                    // }
-                    // else
-                    // {
                     packageVersion = packageReference.Version;
-                    //}
+
 
                     if (FloatRange.TryParse(packageVersion, out var floatRange))
                     {

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Xml.Linq;
+using NuGet.Versioning;
 
 namespace Dotnet.Deps.Core.ProjectSystem
 {
@@ -18,13 +19,9 @@ namespace Dotnet.Deps.Core.ProjectSystem
         {
             var projectFile = XDocument.Load(path);
             var nameSpace = projectFile.Root.Name.Namespace;
-            if (path.EndsWith("Packages.props"))
-            {
-
-            }
             var msBuildProjectFile = new MsBuildProjectFile(projectFile, path);
             var packageReferenceElements = projectFile.Descendants(nameSpace + "PackageReference");
-            var packageReferences = new List<PackageReference>();
+            var packageReferences = new List<NuGetPackageReference>();
             foreach (var packageReferenceElement in packageReferenceElements)
             {
                 var packageName = packageReferenceElement.Attribute("Include")?.Value;
@@ -43,37 +40,25 @@ namespace Dotnet.Deps.Core.ProjectSystem
                     continue;
                 }
 
-                var usesVariable = packageVersion.StartsWith("$");
 
-                packageReferences.Add(new PackageReference(packageName, packageVersion, usesVariable));
 
-                // if (FloatRange.TryParse(packageVersion, out var floatRange))
-                // {
-                //     var nugetVersion = floatRange.MinVersion;
-                //     var nugetPackageReference = new MsBuildPackageReference(packageName, packageVersion, floatRange.MinVersion, floatRange.FloatBehavior, packageReferenceElement);
-                //     packageReferences.Add(nugetPackageReference);
-                // }
-                // else
-                // {
-                //     console.WriteError($"Warning: The package '{packageName}' has an invalid version number '{packageVersion}'");
-                // }
-            }
 
-            var properties = new List<Property>();
-            var propertyGroups = projectFile.Descendants(nameSpace + "PropertyGroup");
-            foreach (var propertyGroup in propertyGroups)
-            {
-                foreach (var propertyElement in propertyGroup.Descendants())
+                //packageReferences.Add(new PackageReference(packageName, packageVersion));
+
+                if (FloatRange.TryParse(packageVersion, out var floatRange))
                 {
-                    var value = propertyElement.Value;
-                    var isVariable = propertyElement.Value.Trim().StartsWith("$");
-                    var name = propertyElement.Name.LocalName;
-                    properties.Add(new Property(name, value, isVariable, msBuildProjectFile));
+                    var nugetVersion = floatRange.MinVersion;
+                    var nugetPackageReference = new MsBuildPackageReference(packageName, packageVersion, floatRange, packageReferenceElement);
+                    packageReferences.Add(nugetPackageReference);
+                }
+                else
+                {
+                    console.WriteError($"Warning: The package '{packageName}' has an invalid version number '{packageVersion}'");
                 }
             }
 
             msBuildProjectFile.PackageReferences = packageReferences.ToArray();
-            msBuildProjectFile.Properties = properties.ToArray();
+
 
             return msBuildProjectFile;
         }

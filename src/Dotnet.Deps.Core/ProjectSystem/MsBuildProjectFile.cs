@@ -17,9 +17,8 @@ namespace Dotnet.Deps.Core.ProjectSystem
             Path = path;
         }
 
-        public PackageReference[] PackageReferences { get; set; }
+        public NuGetPackageReference[] PackageReferences { get; set; }
 
-        public Property[] Properties { get; set; }
         public string Path { get; }
 
         public void Save()

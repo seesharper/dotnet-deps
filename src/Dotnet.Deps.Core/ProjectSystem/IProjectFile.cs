@@ -9,9 +9,7 @@ namespace Dotnet.Deps.Core.ProjectSystem
         /// Gets a list of package references in this project file.
         /// </summary>
         /// <value></value>
-        PackageReference[] PackageReferences { get; }
-
-        Property[] Properties { get; }
+        NuGetPackageReference[] PackageReferences { get; }
 
         /// <summary>
         /// Saves the project file.
