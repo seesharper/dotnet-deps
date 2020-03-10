@@ -15,13 +15,13 @@ namespace Dotnet.Deps.Core.ProjectSystem
 
         public string FileExtensions { get => "csproj;props;target"; }
 
-        public IProjectFile Load(string path)
+        public IProjectFile<NuGetPackageReference> Load(string path)
         {
             var projectFile = XDocument.Load(path);
             var nameSpace = projectFile.Root.Name.Namespace;
             var msBuildProjectFile = new MsBuildProjectFile(projectFile, path);
             var packageReferenceElements = projectFile.Descendants(nameSpace + "PackageReference");
-            var packageReferences = new List<NuGetPackageReference>();
+            var packageReferences = new List<MsBuildPackageReference>();
             foreach (var packageReferenceElement in packageReferenceElements)
             {
                 var packageName = packageReferenceElement.Attribute("Include")?.Value;

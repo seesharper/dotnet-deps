@@ -17,7 +17,7 @@ namespace Dotnet.Deps.Core.ProjectSystem
 
         public ProjectCollection Load(string workingDirectory)
         {
-            var result = new List<IProjectFile>();
+            var result = new List<IProjectFile<NuGetPackageReference>>();
 
             var fileExtensions = projectLoader.FileExtensions.Split(';');
             foreach (var fileExtension in fileExtensions)

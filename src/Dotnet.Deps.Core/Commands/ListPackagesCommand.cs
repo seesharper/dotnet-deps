@@ -22,7 +22,7 @@ namespace Dotnet.Deps.Core.Commands
 
         public async Task Execute(ListPackagesCommandOptions options)
         {
-            var projectFilesToSave = new List<IProjectFile>();
+            var projectFilesToSave = new List<IProjectFile<NuGetPackageReference>>();
 
             var projectCollection = projectCollectionLoader.Load(options.RootFolder);
             var allPackages = projectCollection.ProjectFiles.SelectMany(pf => pf.PackageReferences).ToArray();

@@ -50,24 +50,5 @@ namespace Dotnet.Deps.Tests
                 .Execute();
             result.StandardOut.Should().NotContain("LightInject 5.1.0 =>");
         }
-
-        [Fact]
-        public void ShouldHandleVersionNumberAsVariable()
-        {
-            var result = new MsBuildTestCase()
-                .AddPackage("LightInject", "$(LightInjectVersion)")
-                .AddProperty("LightInjectVersion", "5.1.0")
-                .Execute();
-
-            result.StandardOut.Should().Contain("LightInject 5.1.0 =>");
-        }
-
-        [Fact]
-        public void ShouldListPackagesFromPropsFile()
-        {
-            var result = new MsBuildTestCase()
-                .AddPackage("LightInject")
-                .Execute();
-        }
     }
 }

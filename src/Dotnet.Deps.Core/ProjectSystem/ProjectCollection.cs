@@ -7,12 +7,12 @@ namespace Dotnet.Deps.Core.ProjectSystem
 {
     public class ProjectCollection
     {
-        public ProjectCollection(IProjectFile[] projectFiles)
+        public ProjectCollection(IProjectFile<NuGetPackageReference>[] projectFiles)
         {
             ProjectFiles = projectFiles;
         }
 
-        public IProjectFile[] ProjectFiles { get; }
+        public IProjectFile<NuGetPackageReference>[] ProjectFiles { get; }
 
     }
 }
