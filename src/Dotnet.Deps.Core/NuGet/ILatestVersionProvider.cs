@@ -43,10 +43,6 @@ namespace Dotnet.Deps.Core.NuGet
             using (var progressBar = new ProgressBar(totalTicks, "Getting latest package versions", options))
             {
                 await Task.WhenAll(packageNames.Select(name => GetLatestVersion(name, preRelease, sourceRepositories, result, progressBar))).ConfigureAwait(false);
-
-                // progressBar.Tick(); //will advance pbar to 1 out of 10.
-                //                     //we can also advance and update the progressbar text
-                // progressBar.Tick("Step 2 of 10");
             }
 
 

@@ -3,19 +3,37 @@ using System.Xml.Linq;
 namespace Dotnet.Deps.Tests
 {
 
-    public class TestResult
+    public abstract class TestResult
     {
-        public TestResult(XDocument projectFile, string standardOut, string standardError, int exitCode)
+        public TestResult(string standardOut, string standardError, int exitCode)
         {
-            ProjectFile = projectFile;
+
             StandardOut = standardOut;
             StandardError = standardError;
             ExitCode = exitCode;
         }
 
-        public XDocument ProjectFile { get; }
+
         public string StandardOut { get; }
         public string StandardError { get; }
         public int ExitCode { get; }
+    }
+
+
+    public class MsBuildTestResult : TestResult
+    {
+        public MsBuildTestResult(XDocument projectFile, string standardOut, string standardError, int exitCode) : base(standardOut, standardError, exitCode)
+        {
+        }
+
+        public XDocument ProjectFile { get; }
+    }
+
+
+    public class ScriptTestResult : TestResult
+    {
+        public ScriptTestResult(string standardOut, string standardError, int exitCode) : base(standardOut, standardError, exitCode)
+        {
+        }
     }
 }

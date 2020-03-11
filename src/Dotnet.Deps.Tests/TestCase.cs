@@ -12,47 +12,19 @@ namespace Dotnet.Deps.Tests
     {
         protected List<(string name, string version)> packageReferences = new List<(string name, string version)>();
 
-        private ProjectFileTemplate projectFileTemplate = ProjectFileTemplates.MsBuild;
-
         public TestCase AddPackage(string name, string version = "")
         {
             packageReferences.Add((name, version));
             return this;
         }
 
-        public TestCase WithTemplate(ProjectFileTemplate projectFileTemplate)
-        {
-            this.projectFileTemplate = projectFileTemplate;
-            return this;
-        }
 
-        public TestResult Execute(params string[] args)
-        {
-            var stdOut = new StringBuilder();
-            var stdErr = new StringBuilder();
-
-            var app = new App(new AppConsole(new StringWriter(stdOut), new StringWriter(stdErr)));
-
-            using (var projectFolder = new DisposableFolder())
-            {
-                List<string> allArgs = new List<string>();
-                allArgs.Add("-cwd");
-                allArgs.Add(projectFolder.Path);
-                allArgs.AddRange(args);
-
-                var projectFileContent = CreateProjectFile();
-                var pathToProjectFile = Path.Combine(projectFolder.Path, "project.csproj");
-                File.WriteAllText(pathToProjectFile, projectFileContent);
-                int exitCode = app.Execute(allArgs.ToArray());
-                return new TestResult(XDocument.Load(pathToProjectFile), stdOut.ToString(), stdErr.ToString(), exitCode);
-            }
-        }
 
         protected abstract string CreateProjectFile();
 
     }
 
-    public class MsBuildTestCase : TestCase
+    public class MsBuildTestCase
     {
         private const string msBuildProjectFile = @"
 <Project Sdk=""Microsoft.NET.Sdk"">
@@ -62,7 +34,16 @@ namespace Dotnet.Deps.Tests
   </ItemGroup>
 </Project>";
 
-        protected override string CreateProjectFile()
+
+        protected List<(string name, string version)> packageReferences = new List<(string name, string version)>();
+
+        public MsBuildTestCase AddPackage(string name, string version = "")
+        {
+            packageReferences.Add((name, version));
+            return this;
+        }
+
+        protected string CreateProjectFile()
         {
             XDocument projectFile = XDocument.Parse(msBuildProjectFile);
             var itemGroupElement = projectFile.Descendants("ItemGroup").Single();
@@ -82,11 +63,41 @@ namespace Dotnet.Deps.Tests
 
             return projectFile.ToString();
         }
+
+        public MsBuildTestResult Execute(params string[] args)
+        {
+            var stdOut = new StringBuilder();
+            var stdErr = new StringBuilder();
+
+            var app = new App(new AppConsole(new StringWriter(stdOut), new StringWriter(stdErr)));
+
+            using (var projectFolder = new DisposableFolder())
+            {
+                List<string> allArgs = new List<string>();
+                allArgs.Add("-cwd");
+                allArgs.Add(projectFolder.Path);
+                allArgs.AddRange(args);
+
+                var projectFileContent = CreateProjectFile();
+                var pathToProjectFile = Path.Combine(projectFolder.Path, "project.csproj");
+                File.WriteAllText(pathToProjectFile, projectFileContent);
+                int exitCode = app.Execute(allArgs.ToArray());
+                return new MsBuildTestResult(XDocument.Load(pathToProjectFile), stdOut.ToString(), stdErr.ToString(), exitCode);
+            }
+        }
     }
 
-    public class ScriptTestCase : TestCase
+    public class ScriptTestCase
     {
-        protected override string CreateProjectFile()
+        protected List<(string name, string version)> packageReferences = new List<(string name, string version)>();
+
+        public ScriptTestCase AddPackage(string name, string version = "")
+        {
+            packageReferences.Add((name, version));
+            return this;
+        }
+
+        protected string CreateProjectFile()
         {
             var scriptFile = new StringBuilder();
             foreach (var packageReference in packageReferences)
@@ -95,6 +106,30 @@ namespace Dotnet.Deps.Tests
             }
 
             return scriptFile.ToString();
+        }
+
+
+        public ScriptTestResult Execute(params string[] args)
+        {
+            var stdOut = new StringBuilder();
+            var stdErr = new StringBuilder();
+
+            var app = new App(new AppConsole(new StringWriter(stdOut), new StringWriter(stdErr)));
+
+            using (var projectFolder = new DisposableFolder())
+            {
+                List<string> allArgs = new List<string>();
+                allArgs.Add("-cwd");
+                allArgs.Add(projectFolder.Path);
+                allArgs.AddRange(args);
+
+                var projectFileContent = CreateProjectFile();
+                var pathToProjectFile = Path.Combine(projectFolder.Path, "script.csx");
+                File.WriteAllText(pathToProjectFile, projectFileContent);
+                int exitCode = app.Execute(allArgs.ToArray());
+                return new ScriptTestResult(stdOut.ToString(), stdErr.ToString(), exitCode);
+                //return new MsBuildTestResult(XDocument.Load(pathToProjectFile), stdOut.ToString(), stdErr.ToString(), exitCode);
+            }
         }
     }
 

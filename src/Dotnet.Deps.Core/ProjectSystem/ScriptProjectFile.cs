@@ -5,9 +5,9 @@ namespace Dotnet.Deps.Core
 {
     public class ScriptProjectFile : IProjectFile<ScriptPackageReference>
     {
-        private readonly string content;
+        private readonly ScriptFileContent content;
 
-        public ScriptProjectFile(string content, string path)
+        public ScriptProjectFile(ScriptFileContent content, string path)
         {
             this.content = content;
             Path = path;
@@ -19,7 +19,7 @@ namespace Dotnet.Deps.Core
 
         public void Save()
         {
-            File.WriteAllText(Path, content);
+            File.WriteAllText(Path, content.SourceCode);
         }
     }
 }

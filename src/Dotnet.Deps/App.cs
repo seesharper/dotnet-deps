@@ -45,7 +45,7 @@ namespace Dotnet.Deps
             updateCommand.OnExecuteAsync(async cancellationToken =>
             {
                 var workingDirectory = cwd.HasValue() ? cwd.Value() : Directory.GetCurrentDirectory();
-                var listPackagesCommand = new ListPackagesCommand(console, new ProjectCollectionLoader(console, new MsBuildProjectLoader(console)), new LatestVersionProvider(console));
+                var listPackagesCommand = new ListPackagesCommand(console, new ProjectCollectionLoader(console, new IProjectLoader[] { new MsBuildProjectLoader(console), new ScriptProjectLoader(console) }), new LatestVersionProvider(console));
                 var commandOptions = new ListPackagesCommandOptions(workingDirectory, "", "", false, true);
                 await listPackagesCommand.Execute(commandOptions);
             });
@@ -54,7 +54,7 @@ namespace Dotnet.Deps
             app.OnExecuteAsync(async cancellationToken =>
             {
                 var workingDirectory = cwd.HasValue() ? cwd.Value() : Directory.GetCurrentDirectory();
-                var listPackagesCommand = new ListPackagesCommand(console, new ProjectCollectionLoader(console, new MsBuildProjectLoader(console)), new LatestVersionProvider(console));
+                var listPackagesCommand = new ListPackagesCommand(console, new ProjectCollectionLoader(console, new IProjectLoader[] { new MsBuildProjectLoader(console), new ScriptProjectLoader(console) }), new LatestVersionProvider(console));
                 var commandOptions = new ListPackagesCommandOptions(workingDirectory, "", "", false, false);
                 await listPackagesCommand.Execute(commandOptions);
             });

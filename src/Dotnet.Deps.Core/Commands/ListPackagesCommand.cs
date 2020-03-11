@@ -49,7 +49,8 @@ namespace Dotnet.Deps.Core.Commands
                             {
                                 continue;
                             }
-                            if (!floatRange.Satisfies(latestVersion.NugetVersion))
+
+                            if (!IsLatestVersion(floatRange, latestVersion.NugetVersion))
                             {
                                 console.WriteHighlighted($"{packageReference.Name} {packageReference.Version} => {latestVersion.NugetVersion} ({latestVersion.Feed}) 😢");
                             }
@@ -64,6 +65,8 @@ namespace Dotnet.Deps.Core.Commands
                         console.WriteError($"Warning: The package '{packageReference.Name}' has an invalid version number '{packageVersion}'");
                     }
                 }
+
+
             }
 
 
@@ -107,6 +110,18 @@ namespace Dotnet.Deps.Core.Commands
 
             // }
 
+        }
+
+        private bool IsLatestVersion(FloatRange currentVersion, NuGetVersion latestVersion)
+        {
+            if (currentVersion.FloatBehavior == NuGetVersionFloatBehavior.None)
+            {
+                return currentVersion.MinVersion == latestVersion;
+            }
+            else
+            {
+                return currentVersion.Satisfies(latestVersion);
+            }
         }
     }
 }

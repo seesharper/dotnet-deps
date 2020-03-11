@@ -3,13 +3,13 @@ using Xunit;
 
 namespace Dotnet.Deps.Tests
 {
-    public partial class UnitTest1
+    public partial class MsBuildTests
     {
         [Fact]
         public void ShouldListOutdatedDependency()
         {
             var result = new MsBuildTestCase()
-                .AddPackage("LightInject", "5.1.0")
+                .AddPackage("LightInject", "6.3.2")
                 .Execute();
             result.StandardOut.Should().Contain("LightInject 5.1.0 =>");
             result.ProjectFile.ShouldHavePackageReference("LightInject", "5.1.0");

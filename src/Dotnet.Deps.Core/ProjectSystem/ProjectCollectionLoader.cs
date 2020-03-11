@@ -7,41 +7,44 @@ namespace Dotnet.Deps.Core.ProjectSystem
     public class ProjectCollectionLoader : IProjectCollectionLoader
     {
         private readonly AppConsole console;
-        private readonly IProjectLoader projectLoader;
+        private readonly IProjectLoader[] projectLoaders;
 
-        public ProjectCollectionLoader(AppConsole console, IProjectLoader projectLoader)
+        public ProjectCollectionLoader(AppConsole console, IProjectLoader[] projectLoaders)
         {
             this.console = console;
-            this.projectLoader = projectLoader;
+            this.projectLoaders = projectLoaders;
         }
 
         public ProjectCollection Load(string workingDirectory)
         {
             var result = new List<IProjectFile<NuGetPackageReference>>();
 
-            var fileExtensions = projectLoader.FileExtensions.Split(';');
-            foreach (var fileExtension in fileExtensions)
+            foreach (var projectLoader in projectLoaders)
             {
-                var projectFiles = Directory.GetFiles(workingDirectory, $"*.{fileExtension}", SearchOption.AllDirectories);
-                foreach (var projectFile in projectFiles)
+                var fileExtensions = projectLoader.FileExtensions.Split(';');
+                foreach (var fileExtension in fileExtensions)
                 {
-                    console.WriteNormal($"Analyzing {projectFile}");
-                    try
+                    var projectFiles = Directory.GetFiles(workingDirectory, $"*.{fileExtension}", SearchOption.AllDirectories);
+                    foreach (var projectFile in projectFiles)
                     {
-                        var project = projectLoader.Load(projectFile);
-                        if (project.PackageReferences.Length > 0)
+                        console.WriteNormal($"Analyzing {projectFile}");
+                        try
                         {
-                            result.Add(project);
+                            var project = projectLoader.Load(projectFile);
+                            if (project.PackageReferences.Length > 0)
+                            {
+                                result.Add(project);
+                            }
                         }
-
+                        catch (System.Exception)
+                        {
+                            console.WriteNormal($"Unable to read {projectFile}");
+                        }
                     }
-                    catch (System.Exception)
-                    {
-
-                    }
-                    //result.Add(projectLoader.Load(projectFile));
                 }
+
             }
+
 
             return new ProjectCollection(result.ToArray());
         }
