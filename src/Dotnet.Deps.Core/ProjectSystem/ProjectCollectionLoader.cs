@@ -15,6 +15,10 @@ namespace Dotnet.Deps.Core.ProjectSystem
             this.projectLoaders = projectLoaders;
         }
 
+        public ProjectCollectionLoader(AppConsole console) : this(console, new IProjectLoader[] { new MsBuildProjectLoader(console), new ScriptProjectLoader(console) })
+        {
+        }
+
         public ProjectCollection Load(string workingDirectory)
         {
             var result = new List<IProjectFile<NuGetPackageReference>>();

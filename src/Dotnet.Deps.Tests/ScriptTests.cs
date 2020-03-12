@@ -12,7 +12,17 @@ namespace Dotnet.Deps.Tests
                 .AddPackage("LightInject", "5.1.0")
                 .Execute();
             result.StandardOut.Should().Contain("LightInject 5.1.0 =>");
-            //result.ProjectFile.ShouldHavePackageReference("LightInject", "5.1.0");
+            result.ModifiedContent.Should().Contain("5.1.0");
+        }
+
+        [Fact]
+        public void ShouldUpdateToLatestVersion()
+        {
+            var result = new ScriptTestCase()
+                .AddPackage("LightInject", "5.1.0")
+                .Execute("--update");
+
         }
     }
 }
+

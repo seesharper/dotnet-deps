@@ -19,7 +19,8 @@ namespace Dotnet.Deps.Core.ProjectSystem
 
         public override void Update(string newVersion)
         {
-            content.SourceCode = Regex.Replace(content.SourceCode, referenceDirectivePattern, $"$1$2$3{newVersion}$5");
+            content.SourceCode = Regex.Replace(content.SourceCode, referenceDirectivePattern, "${1}${2}${3}" + newVersion + "${5}", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            content.SourceCode = Regex.Replace(content.SourceCode, loadDirectivePattern, "${1}${2}${3}" + newVersion + "${5}", RegexOptions.IgnoreCase | RegexOptions.Multiline);
         }
     }
 }

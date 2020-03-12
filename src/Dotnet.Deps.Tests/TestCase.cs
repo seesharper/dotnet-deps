@@ -127,8 +127,7 @@ namespace Dotnet.Deps.Tests
                 var pathToProjectFile = Path.Combine(projectFolder.Path, "script.csx");
                 File.WriteAllText(pathToProjectFile, projectFileContent);
                 int exitCode = app.Execute(allArgs.ToArray());
-                return new ScriptTestResult(stdOut.ToString(), stdErr.ToString(), exitCode);
-                //return new MsBuildTestResult(XDocument.Load(pathToProjectFile), stdOut.ToString(), stdErr.ToString(), exitCode);
+                return new ScriptTestResult(File.ReadAllText(pathToProjectFile), stdOut.ToString(), stdErr.ToString(), exitCode);
             }
         }
     }

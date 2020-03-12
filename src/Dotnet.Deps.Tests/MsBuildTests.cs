@@ -9,7 +9,7 @@ namespace Dotnet.Deps.Tests
         public void ShouldListOutdatedDependency()
         {
             var result = new MsBuildTestCase()
-                .AddPackage("LightInject", "6.3.2")
+                .AddPackage("LightInject", "5.1.0")
                 .Execute();
             result.StandardOut.Should().Contain("LightInject 5.1.0 =>");
             result.ProjectFile.ShouldHavePackageReference("LightInject", "5.1.0");
@@ -20,7 +20,7 @@ namespace Dotnet.Deps.Tests
         {
             var result = new MsBuildTestCase()
                 .AddPackage("LightInject", "5.1.0")
-                .Execute("update");
+                .Execute("--update");
             result.ProjectFile.ShouldHavePackageReferenceWithLatestVersion("LightInject", "5.1.0");
         }
 

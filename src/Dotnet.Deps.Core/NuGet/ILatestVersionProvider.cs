@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NuGet.Common;
+using NuGet.Configuration;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
@@ -71,7 +72,8 @@ namespace Dotnet.Deps.Core.NuGet
         private static ISourceRepositoryProvider GetSourceRepositoryProvider(string rootFolder)
         {
             var settings = global::NuGet.Configuration.Settings.LoadDefaultSettings(rootFolder);
-            return new SourceRepositoryProvider(settings, Repository.Provider.GetCoreV3());
+            var packageSourceProvider = new PackageSourceProvider(settings);
+            return new SourceRepositoryProvider(packageSourceProvider, Repository.Provider.GetCoreV3());
         }
 
         private async Task GetLatestVersion(string packageName, bool preRelease, SourceRepository[] repositories, ConcurrentBag<LatestVersion> result, ProgressBar progressBar)

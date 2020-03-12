@@ -25,8 +25,8 @@ namespace Dotnet.Deps.Core.ProjectSystem
         {
             var content = File.ReadAllText(path);
             var scriptFileContent = new ScriptFileContent() { SourceCode = content };
-            var matches = Regex.Matches(content, ReferenceDirectivePattern).Cast<Match>()
-                .Union(Regex.Matches(content, LoadDirectivePattern).Cast<Match>()).ToArray();
+            var matches = Regex.Matches(content, ReferenceDirectivePattern, RegexOptions.IgnoreCase | RegexOptions.Multiline).Cast<Match>()
+                .Union(Regex.Matches(content, LoadDirectivePattern, RegexOptions.IgnoreCase | RegexOptions.Multiline).Cast<Match>()).ToArray();
             var packageReferences = new List<ScriptPackageReference>();
             foreach (var match in matches)
             {

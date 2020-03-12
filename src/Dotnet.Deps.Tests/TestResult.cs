@@ -24,6 +24,7 @@ namespace Dotnet.Deps.Tests
     {
         public MsBuildTestResult(XDocument projectFile, string standardOut, string standardError, int exitCode) : base(standardOut, standardError, exitCode)
         {
+            ProjectFile = projectFile;
         }
 
         public XDocument ProjectFile { get; }
@@ -32,8 +33,11 @@ namespace Dotnet.Deps.Tests
 
     public class ScriptTestResult : TestResult
     {
-        public ScriptTestResult(string standardOut, string standardError, int exitCode) : base(standardOut, standardError, exitCode)
+        public ScriptTestResult(string modifiedContent, string standardOut, string standardError, int exitCode) : base(standardOut, standardError, exitCode)
         {
+            ModifiedContent = modifiedContent;
         }
+
+        public string ModifiedContent { get; }
     }
 }
