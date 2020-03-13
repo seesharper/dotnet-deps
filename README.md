@@ -40,5 +40,31 @@ dotnet deps --update
 
 
 
- 
+### Filtering
+
+We can filter the packages to be processed by `dotnet-deps` by passing an `--filter` option.
+
+```shell
+deps --filter McMaster
+```
+
+> The filter is applied as an regular expression
+
+
+
+### Project file types
+
+The following file types are supported by `dotnet-deps`
+
+ * SDK-style csproj files (*.csproj)
+
+ * MsBuild props files (*.props)
+
+ * MsBuild target files (*.target)
+
+ * C# script files (*.csx)
+
+   
+
+> `dotnet-deps` only looks for `<PackageReference>` nodes and WILL NOT try to resolve MSBuild variables.
 
