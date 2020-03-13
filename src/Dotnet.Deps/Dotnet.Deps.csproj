@@ -4,6 +4,11 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <OutputType>Exe</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <PackAsTool>true</PackAsTool>
+    <IsPackable>true</IsPackable>
+    <ToolCommandName>deps</ToolCommandName>
+    <PackageId>dotnet-deps</PackageId>
+    <Version>2.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,8 +16,6 @@
     <PackageReference Include="NuGet.Configuration" Version="5.4.0" />
     <PackageReference Include="NuGet.Packaging" Version="5.4.0" />
     <PackageReference Include="NuGet.Packaging.Core" Version="5.4.0" />
-    <!-- <PackageReference Include="NuGet.Packaging.Core.Types" Version="4.2.0" /> -->
-    <!-- <PackageReference Include="NuGet.Protocol.Core.v3" Version="4.2.0" /> -->
     <PackageReference Include="simpleexec" Version="6.2.0" />
   </ItemGroup>
 
