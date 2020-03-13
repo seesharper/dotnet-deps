@@ -48,7 +48,7 @@ deps --update
 
 ### Filtering
 
-We can filter the packages to be processed by `dotnet-deps` by passing an `--filter` option.
+We can filter the packages to be processed by `dotnet-deps` by passing a `--filter` option.
 
 ```shell
 deps --filter McMaster
