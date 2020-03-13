@@ -3,6 +3,14 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <PackageTags>dotnet;cli;csx;nuget;tool</PackageTags>
+    <PackageProjectUrl>https://github.com/seesharper/dotnet-deps</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/seesharper/dotnet-deps.git</RepositoryUrl>
+    <Authors>Bernhard Richter</Authors>
+    <Description>A simple library that can be used to analyze and update NuGet dependencies.</Description>
+    <Version>2.0.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="NuGet.Configuration" Version="5.4.0" />
