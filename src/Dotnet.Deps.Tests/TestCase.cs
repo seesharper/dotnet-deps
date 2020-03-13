@@ -37,9 +37,17 @@ namespace Dotnet.Deps.Tests
 
         protected List<(string name, string version)> packageReferences = new List<(string name, string version)>();
 
+        protected string filter;
+
         public MsBuildTestCase AddPackage(string name, string version = "")
         {
             packageReferences.Add((name, version));
+            return this;
+        }
+
+        public MsBuildTestCase WithFilter(string filter)
+        {
+            this.filter = filter;
             return this;
         }
 
@@ -77,6 +85,12 @@ namespace Dotnet.Deps.Tests
                 allArgs.Add("-cwd");
                 allArgs.Add(projectFolder.Path);
                 allArgs.AddRange(args);
+
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    allArgs.Add("--filter");
+                    allArgs.Add(filter);
+                }
 
                 var projectFileContent = CreateProjectFile();
                 var pathToProjectFile = Path.Combine(projectFolder.Path, "project.csproj");

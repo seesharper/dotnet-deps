@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Dotnet.Deps.Core.NuGet;
 using Dotnet.Deps.Core.ProjectSystem;
@@ -13,7 +14,7 @@ namespace Dotnet.Deps.Core
     {
         private string rootFolder;
 
-        private string filter;
+        private string filter = ".*";
 
         private bool updateDependencies;
 
@@ -29,6 +30,10 @@ namespace Dotnet.Deps.Core
 
         public DependencyAnalyzer WithFilter(string filter)
         {
+            if (string.IsNullOrWhiteSpace(filter))
+            {
+                filter = ".*";
+            }
             this.filter = filter;
             return this;
         }
@@ -72,6 +77,12 @@ namespace Dotnet.Deps.Core
                 console.WriteHeader(projectFile.Path);
                 foreach (var packageReference in projectFile.PackageReferences)
                 {
+                    if (!Regex.IsMatch(packageReference.Name, filter))
+                    {
+                        continue;
+                    }
+
+
                     string packageVersion = null;
                     packageVersion = packageReference.Version;
 

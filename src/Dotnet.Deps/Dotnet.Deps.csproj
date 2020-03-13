@@ -16,7 +16,6 @@
     <PackageReference Include="NuGet.Configuration" Version="5.4.0" />
     <PackageReference Include="NuGet.Packaging" Version="5.4.0" />
     <PackageReference Include="NuGet.Packaging.Core" Version="5.4.0" />
-    <PackageReference Include="simpleexec" Version="6.2.0" />
   </ItemGroup>
 
   <ItemGroup>

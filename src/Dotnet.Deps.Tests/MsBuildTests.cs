@@ -50,5 +50,25 @@ namespace Dotnet.Deps.Tests
                 .Execute();
             result.StandardOut.Should().NotContain("LightInject 5.1.0 =>");
         }
+
+        [Fact]
+        public void ShouldExcludeFilteredPackages()
+        {
+            var result = new MsBuildTestCase()
+                .AddPackage("LightInject", "5.1.0")
+                .WithFilter("Microsoft")
+                .Execute();
+            result.StandardOut.Should().NotContain("LightInject 5.1.0 =>");
+        }
+
+        [Fact]
+        public void ShouldIncludeFilteredPackages()
+        {
+            var result = new MsBuildTestCase()
+                .AddPackage("LightInject", "5.1.0")
+                .WithFilter("LightInject")
+                .Execute();
+            result.StandardOut.Should().Contain("LightInject 5.1.0 =>");
+        }
     }
 }
