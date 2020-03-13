@@ -25,6 +25,7 @@ build/Chocolatey/*.nuspec
 build/Chocolatey/tools/LICENSE.TXT
 build/.vscode
 build/Artifacts
+dotnet-script-tool/
 
 # Visual Studio 2015 cache/options directory
 .vs/
