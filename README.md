@@ -22,6 +22,12 @@ dotnet tool install -g dotnet-deps
 Open a terminal window and navigate to the directory that contains the project(s) we want to analyze.
 
 ```shell
+deps
+```
+
+
+
+```shell
 /Users/bernhardrichter/GitHub/dotnet-deps/src/Dotnet.Deps/Dotnet.Deps.csproj                                            
 McMaster.Extensions.CommandLineUtils 2.5.1 => 2.6.0 (nuget.org) 😢
 NuGet.Configuration 5.4.0 5.4.0 (nuget.org) 🍺
@@ -35,7 +41,7 @@ The output is quite simple. We get a 🍺  for every dependency that is up-to-d
 If we should want to update all dependencies we can simply use the `update` option.
 
 ```c#
-dotnet deps --update
+deps --update
 ```
 
 
