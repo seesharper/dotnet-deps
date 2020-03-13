@@ -32,10 +32,10 @@ simpleexec 6.2.0 6.2.0 (nuget.org) 🍺
 
 The output is quite simple. We get a 🍺  for every dependency that is up-to-date and a 😢 for all dependencies that needs to be updated.
 
-If we should want to update all dependencies we can simply use the `update` command.
+If we should want to update all dependencies we can simply use the `update` option.
 
 ```c#
-dotnet deps update
+dotnet deps --update
 ```
 
 
