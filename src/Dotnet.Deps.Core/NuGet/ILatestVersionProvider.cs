@@ -87,11 +87,11 @@ namespace Dotnet.Deps.Core.NuGet
 
                 if (preRelease)
                 {
-                    latestVersionInRepository = allVersions.LastOrDefault();
+                    latestVersionInRepository = allVersions.OrderBy(nv => nv).LastOrDefault();
                 }
                 else
                 {
-                    latestVersionInRepository = allVersions.Where(v => !v.IsPrerelease).LastOrDefault();
+                    latestVersionInRepository = allVersions.Where(v => !v.IsPrerelease).OrderBy(nv => nv).LastOrDefault();
                 }
 
                 if (latestVersionInRepository != null)
