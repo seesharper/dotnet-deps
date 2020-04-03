@@ -100,10 +100,15 @@ namespace Dotnet.Deps.Core
                             if (!IsLatestVersion(floatRange, latestVersion.NugetVersion))
                             {
                                 results.Add(new Result(floatRange.MinVersion.ToString(), latestVersion.NugetVersion.ToString(), false, latestVersion.Feed, projectFile.Path));
-                                console.WriteHighlighted($"{packageReference.Name} {packageReference.Version} => {latestVersion.NugetVersion} ({latestVersion.Feed}) 😢");
+
                                 if (updateDependencies)
                                 {
+                                    console.WriteHighlighted($"{packageReference.Name} {packageReference.Version} => {latestVersion.NugetVersion} ({latestVersion.Feed}) UPDATED 🍺");
                                     packageReference.Update(latestVersion.NugetVersion.ToString());
+                                }
+                                else
+                                {
+                                    console.WriteHighlighted($"{packageReference.Name} {packageReference.Version} => {latestVersion.NugetVersion} ({latestVersion.Feed}) 😢");
                                 }
                             }
                             else
@@ -122,6 +127,15 @@ namespace Dotnet.Deps.Core
                 {
                     projectFile.Save();
                 }
+                else
+                {
+                    var numberOfOutDatedDependencies = results.Count(r => !r.IsLatestVersion);
+                    if (numberOfOutDatedDependencies > 0)
+                    {
+                        console.WriteEmptyLine();
+                        console.WriteNormal($"We found {numberOfOutDatedDependencies} 😢 dependencies. For 🍺, type 'deps --update'");
+                    }
+                }
             }
 
             return results.ToArray();
@@ -131,7 +145,7 @@ namespace Dotnet.Deps.Core
         {
             if (currentVersion.FloatBehavior == NuGetVersionFloatBehavior.None)
             {
-                return currentVersion.MinVersion == latestVersion;
+                return currentVersion.MinVersion >= latestVersion;
             }
             else
             {
