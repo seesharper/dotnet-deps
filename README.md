@@ -56,7 +56,9 @@ deps --filter McMaster
 
 > The filter is applied as an regular expression
 
+### Exit Code
 
+If all packages are up-to-date, `dotnet-deps` will exit with exit code `0`, otherwise `0xbad`s
 
 ### Project file types
 

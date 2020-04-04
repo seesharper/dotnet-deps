@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Dotnet.Deps.Tests
 {
-    public partial class MsBuildTests
+    public class MsBuildTests
     {
         [Fact]
         public void ShouldListOutdatedDependency()
@@ -13,7 +13,7 @@ namespace Dotnet.Deps.Tests
                 .Execute();
             result.StandardOut.Should().Contain("LightInject 5.1.0 =>");
             result.ProjectFile.ShouldHaveMsBuildPackageReference("LightInject", "5.1.0");
-            result.ExitCode.Should().Be(0);
+            result.ExitCode.Should().Be(0xbad);
         }
 
         [Fact]
@@ -23,6 +23,7 @@ namespace Dotnet.Deps.Tests
                 .AddPackage("LightInject", "5.1.0")
                 .Execute("--update");
             result.ProjectFile.ShouldHaveMsBuildPackageReferenceWithLatestVersion("LightInject", "5.1.0");
+            result.ExitCode.Should().Be(0);
         }
 
         [Fact]
@@ -32,7 +33,6 @@ namespace Dotnet.Deps.Tests
                .AddPackage("LightInject", "6.*")
                .Execute();
         }
-
 
         [Fact]
         public void ShouldHandleInvalidVersionNumber()
