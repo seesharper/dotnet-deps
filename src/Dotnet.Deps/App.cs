@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using Dotnet.Deps.Core;
 using McMaster.Extensions.CommandLineUtils;
 
@@ -27,13 +28,14 @@ namespace Dotnet.Deps
 
             app.OnExecuteAsync(async cancellationToken =>
             {
-                await new DependencyAnalyzer()
+                var results = await new DependencyAnalyzer()
                     .WithRootFolder(cwd.HasValue() ? cwd.Value() : Directory.GetCurrentDirectory())
                     .WithConsoleOutput(console)
                     .WithFilter(filterOption.Value())
                     .WithPreReleaseOption(preReleaseOption.HasValue())
                     .WithUpdateOption(updateOption.HasValue())
                     .Execute();
+                return results.Any(r => !r.IsLatestVersion) ? 0xbad : 0;
             });
 
             return app.Execute(args);

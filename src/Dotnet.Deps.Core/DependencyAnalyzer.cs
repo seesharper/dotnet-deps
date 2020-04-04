@@ -99,15 +99,15 @@ namespace Dotnet.Deps.Core
 
                             if (!IsLatestVersion(floatRange, latestVersion.NugetVersion))
                             {
-                                results.Add(new Result(floatRange.MinVersion.ToString(), latestVersion.NugetVersion.ToString(), false, latestVersion.Feed, projectFile.Path));
-
                                 if (updateDependencies)
                                 {
                                     console.WriteHighlighted($"{packageReference.Name} {packageReference.Version} => {latestVersion.NugetVersion} ({latestVersion.Feed}) UPDATED 🍺");
                                     packageReference.Update(latestVersion.NugetVersion.ToString());
+                                    results.Add(new Result(floatRange.MinVersion.ToString(), latestVersion.NugetVersion.ToString(), true, latestVersion.Feed, projectFile.Path));
                                 }
                                 else
                                 {
+                                    results.Add(new Result(floatRange.MinVersion.ToString(), latestVersion.NugetVersion.ToString(), false, latestVersion.Feed, projectFile.Path));
                                     console.WriteHighlighted($"{packageReference.Name} {packageReference.Version} => {latestVersion.NugetVersion} ({latestVersion.Feed}) 😢");
                                 }
                             }

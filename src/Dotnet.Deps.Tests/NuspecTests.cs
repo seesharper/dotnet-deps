@@ -13,7 +13,7 @@ namespace Dotnet.Deps.Tests
                 .Execute();
             result.StandardOut.Should().Contain("LightInject 5.1.0 =>");
             result.ProjectFile.ShouldHaveNuspecPackageReference("LightInject", "5.1.0");
-            result.ExitCode.Should().Be(0);
+            result.ExitCode.Should().Be(0xbad);
         }
 
         [Fact]
