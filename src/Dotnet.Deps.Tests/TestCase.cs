@@ -101,6 +101,85 @@ namespace Dotnet.Deps.Tests
         }
     }
 
+
+    public class NuspecTestCase
+    {
+        private const string msBuildProjectFile = @"<?xml version=""1.0""?>
+<package >
+    <metadata>
+    <dependencies>
+    </dependencies>
+    </metadata>
+</package>";
+
+        protected List<(string name, string version)> packageReferences = new List<(string name, string version)>();
+
+        protected string filter;
+
+        public NuspecTestCase AddPackage(string name, string version = "")
+        {
+            packageReferences.Add((name, version));
+            return this;
+        }
+
+        public NuspecTestCase WithFilter(string filter)
+        {
+            this.filter = filter;
+            return this;
+        }
+
+        protected string CreateProjectFile()
+        {
+            XDocument projectFile = XDocument.Parse(msBuildProjectFile);
+            var itemGroupElement = projectFile.Descendants("dependencies").Single();
+            foreach (var packageReference in packageReferences)
+            {
+                if (string.IsNullOrWhiteSpace(packageReference.version))
+                {
+                    var packageElement = new XElement("dependency", new XAttribute("id", packageReference.name));
+                    itemGroupElement.Add(packageElement);
+                }
+                else
+                {
+                    var packageElement = new XElement("dependency", new XAttribute("id", packageReference.name), new XAttribute("version", packageReference.version));
+                    itemGroupElement.Add(packageElement);
+                }
+            }
+
+            return projectFile.ToString();
+        }
+
+        public MsBuildTestResult Execute(params string[] args)
+        {
+            var stdOut = new StringBuilder();
+            var stdErr = new StringBuilder();
+
+            var app = new App(new AppConsole(new StringWriter(stdOut), new StringWriter(stdErr)));
+
+            using (var projectFolder = new DisposableFolder())
+            {
+                List<string> allArgs = new List<string>();
+                allArgs.Add("-cwd");
+                allArgs.Add(projectFolder.Path);
+                allArgs.AddRange(args);
+
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    allArgs.Add("--filter");
+                    allArgs.Add(filter);
+                }
+
+                var projectFileContent = CreateProjectFile();
+                var pathToProjectFile = Path.Combine(projectFolder.Path, "project.nuspec");
+                File.WriteAllText(pathToProjectFile, projectFileContent);
+                int exitCode = app.Execute(allArgs.ToArray());
+                return new MsBuildTestResult(XDocument.Load(pathToProjectFile), stdOut.ToString(), stdErr.ToString(), exitCode);
+            }
+        }
+    }
+
+
+
     public class ScriptTestCase
     {
         protected List<(string name, string version)> packageReferences = new List<(string name, string version)>();

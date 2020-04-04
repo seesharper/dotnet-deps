@@ -15,7 +15,7 @@ namespace Dotnet.Deps.Core.ProjectSystem
             this.projectLoaders = projectLoaders;
         }
 
-        public ProjectCollectionLoader(AppConsole console) : this(console, new IProjectLoader[] { new MsBuildProjectLoader(console), new ScriptProjectLoader(console) })
+        public ProjectCollectionLoader(AppConsole console) : this(console, new IProjectLoader[] { new MsBuildProjectLoader(console), new ScriptProjectLoader(console), new NuspecProjectLoader(console) })
         {
         }
 

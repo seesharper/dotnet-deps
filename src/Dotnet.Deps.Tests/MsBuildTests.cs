@@ -12,7 +12,7 @@ namespace Dotnet.Deps.Tests
                 .AddPackage("LightInject", "5.1.0")
                 .Execute();
             result.StandardOut.Should().Contain("LightInject 5.1.0 =>");
-            result.ProjectFile.ShouldHavePackageReference("LightInject", "5.1.0");
+            result.ProjectFile.ShouldHaveMsBuildPackageReference("LightInject", "5.1.0");
             result.ExitCode.Should().Be(0);
         }
 
@@ -22,7 +22,7 @@ namespace Dotnet.Deps.Tests
             var result = new MsBuildTestCase()
                 .AddPackage("LightInject", "5.1.0")
                 .Execute("--update");
-            result.ProjectFile.ShouldHavePackageReferenceWithLatestVersion("LightInject", "5.1.0");
+            result.ProjectFile.ShouldHaveMsBuildPackageReferenceWithLatestVersion("LightInject", "5.1.0");
         }
 
         [Fact]
