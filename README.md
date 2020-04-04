@@ -58,7 +58,7 @@ deps --filter McMaster
 
 ### Exit Code
 
-If all packages are up-to-date, `dotnet-deps` will exit with exit code `0`, otherwise `0xbad`s
+If all packages are up-to-date, `dotnet-deps` will exit with exit code `0`, otherwise `0xbad`
 
 ### Project file types
 
