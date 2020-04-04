@@ -70,6 +70,8 @@ The following file types are supported by `dotnet-deps`
 
  * C# script files (*.csx)
 
+ * NuGet metadata files (*.nuspec)
+
    
 
 > `dotnet-deps` only looks for `<PackageReference>` nodes and WILL NOT try to resolve MSBuild variables.

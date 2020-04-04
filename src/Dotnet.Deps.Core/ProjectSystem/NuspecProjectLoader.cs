@@ -4,38 +4,34 @@ using NuGet.Versioning;
 
 namespace Dotnet.Deps.Core.ProjectSystem
 {
-    public class MsBuildProjectLoader : IProjectLoader
+    public class NuspecProjectLoader : IProjectLoader
     {
         private readonly AppConsole console;
 
-        public MsBuildProjectLoader(AppConsole console)
+        public NuspecProjectLoader(AppConsole console)
         {
             this.console = console;
         }
 
-        public string FileExtensions { get => "csproj;props;target"; }
+        public string FileExtensions { get => "nuspec"; }
 
         public IProjectFile<NuGetPackageReference> Load(string path)
         {
             var projectFile = XDocument.Load(path);
             var nameSpace = projectFile.Root.Name.Namespace;
-            var msBuildProjectFile = new MsBuildProjectFile(projectFile, path);
-            var packageReferenceElements = projectFile.Descendants(nameSpace + "PackageReference");
-            var packageReferences = new List<MsBuildPackageReference>();
+            var nugetSpecProjectFile = new NuspecProjectFile(projectFile, path);
+            var packageReferenceElements = projectFile.Descendants(nameSpace + "dependency");
+            var packageReferences = new List<NuspecPackageReference>();
             foreach (var packageReferenceElement in packageReferenceElements)
             {
-                var packageName = packageReferenceElement.Attribute("Include")?.Value;
-                if (packageName == null)
-                {
-                    packageName = packageReferenceElement.Attribute("Update")?.Value;
-                }
+                var packageName = packageReferenceElement.Attribute("id")?.Value;
                 if (string.IsNullOrWhiteSpace(packageName))
                 {
                     continue;
                 }
 
-                var packageVersion = packageReferenceElement.Attribute("Version")?.Value;
-                if (packageVersion == null || packageVersion.StartsWith("$"))
+                var packageVersion = packageReferenceElement.Attribute("version")?.Value;
+                if (packageVersion == null)
                 {
                     continue;
                 }
@@ -43,7 +39,7 @@ namespace Dotnet.Deps.Core.ProjectSystem
                 if (FloatRange.TryParse(packageVersion, out var floatRange))
                 {
                     var nugetVersion = floatRange.MinVersion;
-                    var nugetPackageReference = new MsBuildPackageReference(packageName, packageVersion, floatRange, packageReferenceElement);
+                    var nugetPackageReference = new NuspecPackageReference(packageName, packageVersion, floatRange, packageReferenceElement);
                     packageReferences.Add(nugetPackageReference);
                 }
                 else
@@ -52,10 +48,10 @@ namespace Dotnet.Deps.Core.ProjectSystem
                 }
             }
 
-            msBuildProjectFile.PackageReferences = packageReferences.ToArray();
+            nugetSpecProjectFile.PackageReferences = packageReferences.ToArray();
 
 
-            return msBuildProjectFile;
+            return nugetSpecProjectFile;
         }
     }
 
