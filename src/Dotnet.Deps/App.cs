@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Dotnet.Deps.Core;
 using McMaster.Extensions.CommandLineUtils;
 
@@ -21,7 +22,7 @@ namespace Dotnet.Deps
 
             var cwd = app.Option("-cwd |--workingdirectory", "Working directory for analyzing dependencies. Defaults to current directory.", CommandOptionType.SingleValue);
             var filterOption = app.Option("-f | --filter", "Filter packages to be processed.", CommandOptionType.SingleValue);
-            var versionOption = app.VersionOption("-v | --version", "1.0.1");
+            var versionOption = app.VersionOption("-v | --version", GetVersion());
             var preReleaseOption = app.Option("-p ||--pre", "Allow prerelease packages", CommandOptionType.NoValue);
             var updateOption = app.Option("-u ||--update", "Update packages to their latest versions", CommandOptionType.NoValue);
             var helpOption = app.HelpOption("-h | --help");
@@ -39,6 +40,11 @@ namespace Dotnet.Deps
             });
 
             return app.Execute(args);
+        }
+
+        private string GetVersion()
+        {
+            return Assembly.GetExecutingAssembly().GetCustomAttributes<AssemblyInformationalVersionAttribute>().Single().InformationalVersion;
         }
     }
 }

@@ -5,7 +5,7 @@
     <OutputType>Exe</OutputType>
     <Authors>Bernhard Richter</Authors>
     <Description>A simple command line (.Net Global tool) to inspect and update dependencies.</Description>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <PackAsTool>true</PackAsTool>
     <IsPackable>true</IsPackable>
     <ToolCommandName>deps</ToolCommandName>
@@ -15,7 +15,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/seesharper/dotnet-deps.git</RepositoryUrl>
-    <Version>2.2.0</Version>
+    <Version>2.2.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
