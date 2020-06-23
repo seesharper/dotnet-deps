@@ -71,5 +71,27 @@ namespace Dotnet.Deps.Tests
                 .Execute();
             result.StandardOut.Should().Contain("LightInject 5.1.0 =>");
         }
+
+        [Fact]
+        public void ShouldHandleWhiteSpaceInPackageReferenceName()
+        {
+            var result = new MsBuildTestCase()
+                .AddPackage(" LightInject", "5.1.0")
+                .Execute();
+            result.StandardOut.Should().Contain("LightInject 5.1.0 =>");
+            result.ProjectFile.ShouldHaveMsBuildPackageReference("LightInject", "5.1.0");
+            result.ExitCode.Should().Be(0xbad);
+        }
+
+        [Fact]
+        public void ShouldHandleWhiteSpaceInPackageReferenceVersion()
+        {
+            var result = new MsBuildTestCase()
+                .AddPackage("LightInject", " 5.1.0")
+                .Execute();
+            result.StandardOut.Should().Contain("LightInject 5.1.0 =>");
+            result.ProjectFile.ShouldHaveMsBuildPackageReference("LightInject", "5.1.0");
+            result.ExitCode.Should().Be(0xbad);
+        }
     }
 }

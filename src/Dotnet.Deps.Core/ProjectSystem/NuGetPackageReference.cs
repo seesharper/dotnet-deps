@@ -9,8 +9,8 @@ namespace Dotnet.Deps.Core.ProjectSystem
     {
         public NuGetPackageReference(string name, string version, FloatRange floatRange)
         {
-            Name = name;
-            Version = version;
+            Name = name.Trim();
+            Version = version.Trim();
             FloatRange = floatRange;
         }
 
