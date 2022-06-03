@@ -1,23 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="fluentassertions" Version="5.10.2" />
-    <PackageReference Include="LightInject" Version="6.2.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
-    <PackageReference Include="xunit" Version="2.4.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
-    <PackageReference Include="coverlet.collector" Version="1.0.1" />
+    <PackageReference Include="fluentassertions" Version="6.7.0" />
+    <PackageReference Include="LightInject" Version="6.4.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5" />
+    <PackageReference Include="coverlet.collector" Version="3.1.2" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Dotnet.Deps\Dotnet.Deps.csproj" />
     <ProjectReference Include="..\Dotnet.Deps.Core\Dotnet.Deps.Core.csproj" />
   </ItemGroup>
-
 </Project>
