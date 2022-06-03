@@ -1,5 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -13,10 +13,10 @@
     <Version>2.1.0</Version>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="NuGet.Configuration" Version="5.4.0" />
-    <PackageReference Include="NuGet.Packaging" Version="5.4.0" />
-    <PackageReference Include="NuGet.Packaging.Core" Version="5.4.0" />
-    <PackageReference Include="NuGet.Protocol" Version="5.4.0" />
-    <PackageReference Include="ShellProgressBar" Version="5.0.0" />
+    <PackageReference Include="NuGet.Configuration" Version="6.2.0" />
+    <PackageReference Include="NuGet.Packaging" Version="6.2.0" />
+    <PackageReference Include="NuGet.Packaging.Core" Version="6.2.0" />
+    <PackageReference Include="NuGet.Protocol" Version="6.2.0" />
+    <PackageReference Include="ShellProgressBar" Version="5.1.0" />
   </ItemGroup>
 </Project>
