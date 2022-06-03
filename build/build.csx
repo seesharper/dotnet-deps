@@ -13,7 +13,7 @@ Step test = () => DotNet.Test();
 Step pack = () =>
 {
     test();
-    //testcoverage();
+    testcoverage();
     DotNet.Pack();
 };
 
