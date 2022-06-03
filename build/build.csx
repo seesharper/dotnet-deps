@@ -12,8 +12,8 @@ Step test = () => DotNet.Test();
 [StepDescription("Creates the NuGet packages")]
 Step pack = () =>
 {
-    test();
-    testcoverage();
+    //test();
+    //testcoverage();
     DotNet.Pack();
 };
 
