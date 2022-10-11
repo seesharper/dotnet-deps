@@ -16,7 +16,7 @@
     <PackageReference Include="NuGet.Configuration" Version="6.2.0" />
     <PackageReference Include="NuGet.Packaging" Version="6.2.0" />
     <PackageReference Include="NuGet.Packaging.Core" Version="6.2.0" />
-    <PackageReference Include="NuGet.Protocol" Version="6.2.0" />
+    <PackageReference Include="NuGet.Protocol" Version="6.2.2" />
     <PackageReference Include="ShellProgressBar" Version="5.1.0" />
   </ItemGroup>
 </Project>
