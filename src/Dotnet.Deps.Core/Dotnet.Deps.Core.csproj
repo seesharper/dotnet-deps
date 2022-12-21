@@ -10,13 +10,13 @@
     <RepositoryUrl>https://github.com/seesharper/dotnet-deps.git</RepositoryUrl>
     <Authors>Bernhard Richter</Authors>
     <Description>A simple library that can be used to analyze and update NuGet dependencies.</Description>
-    <Version>2.1.0</Version>
+    <Version>2.1.1</Version>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="NuGet.Configuration" Version="6.2.0" />
-    <PackageReference Include="NuGet.Packaging" Version="6.2.0" />
-    <PackageReference Include="NuGet.Packaging.Core" Version="6.2.0" />
-    <PackageReference Include="NuGet.Protocol" Version="6.2.0" />
-    <PackageReference Include="ShellProgressBar" Version="5.1.0" />
+    <PackageReference Include="NuGet.Configuration" Version="6.4.0" />
+    <PackageReference Include="NuGet.Packaging" Version="6.4.0" />
+    <PackageReference Include="NuGet.Packaging.Core" Version="6.4.0" />
+    <PackageReference Include="NuGet.Protocol" Version="6.4.0" />
+    <PackageReference Include="ShellProgressBar" Version="5.2.0" />
   </ItemGroup>
 </Project>
