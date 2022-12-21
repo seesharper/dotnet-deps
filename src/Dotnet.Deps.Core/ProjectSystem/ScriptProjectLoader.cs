@@ -8,23 +8,6 @@ namespace Dotnet.Deps.Core.ProjectSystem
 {
     public class ScriptProjectLoader : IProjectLoader
     {
-        const string Hws = @"[\x20\t]*"; // hws = horizontal whitespace
-
-        const string NuGetPattern = @"nuget:"
-                                  // https://github.com/NuGet/docs.microsoft.com-nuget/issues/543#issue-270039223
-                                  + Hws + @"(\w+(?:[_.-]\w+)*)"
-                                  + @"(?:" + Hws + "," + Hws + @"(.+?))?";
-
-        const string WholeNuGetPattern = @"^" + NuGetPattern + @"$";
-
-        const string NuGetDirectivePatternSuffix = Hws + @"""" + NuGetPattern + @"""";
-
-        const string DirectivePatternPrefix = @"^" + Hws + @"#";
-
-        const string ReferenceDirectivePattern = DirectivePatternPrefix + "r" + NuGetDirectivePatternSuffix;
-        const string LoadDirectivePattern = DirectivePatternPrefix + "load" + NuGetDirectivePatternSuffix;
-
-
         private readonly AppConsole console;
 
         public ScriptProjectLoader(AppConsole console)
@@ -38,8 +21,8 @@ namespace Dotnet.Deps.Core.ProjectSystem
         {
             var content = File.ReadAllText(path);
             var scriptFileContent = new ScriptFileContent() { SourceCode = content };
-            var matches = Regex.Matches(content, ReferenceDirectivePattern, RegexOptions.IgnoreCase | RegexOptions.Multiline).Cast<Match>()
-                .Union(Regex.Matches(content, LoadDirectivePattern, RegexOptions.IgnoreCase | RegexOptions.Multiline).Cast<Match>()).ToArray();
+            var matches = Regex.Matches(content, ScriptRegularExpressions.ReferenceDirectivePattern, RegexOptions.IgnoreCase | RegexOptions.Multiline).Cast<Match>()
+                .Union(Regex.Matches(content, ScriptRegularExpressions.LoadDirectivePattern, RegexOptions.IgnoreCase | RegexOptions.Multiline).Cast<Match>()).ToArray();
             var packageReferences = new List<ScriptPackageReference>();
             foreach (var match in matches)
             {

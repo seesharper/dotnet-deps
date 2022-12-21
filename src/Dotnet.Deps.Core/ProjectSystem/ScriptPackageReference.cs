@@ -12,13 +12,16 @@ namespace Dotnet.Deps.Core.ProjectSystem
 
         public ScriptPackageReference(string name, string version, FloatRange floatRange, ScriptFileContent content) : base(name, version, floatRange)
         {
-            referenceDirectivePattern = $@"^(\s*#r\s*""nuget:\s*)({name})(,\s*)(.*)(\s*""$)";
-            loadDirectivePattern = $@"^(\s*#load\s*""nuget:\s*)({name})(,\s*)(.*)(\s*""$)";
+            // https://stackoverflow.com/questions/8618557/why-doesnt-in-net-multiline-regular-expressions-match-crlf
+            referenceDirectivePattern = $@"^(\s*#r\s*""nuget:\s*)({name})(,\s*)(.*)(\s*""\r?$)";
+            loadDirectivePattern = $@"^(\s*#load\s*""nuget:\s*)({name})(,\s*)(.*)(\s*""\r?$)";
             this.content = content;
         }
 
         public override void Update(string newVersion)
         {
+            var match = Regex.Match(content.SourceCode, ScriptRegularExpressions.ReferenceDirectivePattern, RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            var oldMatch = Regex.Match(content.SourceCode, referenceDirectivePattern, RegexOptions.IgnoreCase | RegexOptions.Multiline);
             content.SourceCode = Regex.Replace(content.SourceCode, referenceDirectivePattern, "${1}${2}${3}" + newVersion + "${5}", RegexOptions.IgnoreCase | RegexOptions.Multiline);
             content.SourceCode = Regex.Replace(content.SourceCode, loadDirectivePattern, "${1}${2}${3}" + newVersion + "${5}", RegexOptions.IgnoreCase | RegexOptions.Multiline);
         }
