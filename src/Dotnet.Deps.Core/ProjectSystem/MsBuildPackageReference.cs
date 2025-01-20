@@ -7,7 +7,7 @@ namespace Dotnet.Deps.Core.ProjectSystem
     {
         private readonly XElement packageElement;
 
-        public MsBuildPackageReference(string name, string versionString, FloatRange floatRange, XElement packageElement) : base(name, versionString, floatRange)
+        public MsBuildPackageReference(string name, string versionString, bool locked, FloatRange floatRange, XElement packageElement) : base(name, versionString, floatRange, locked)
         {
             this.packageElement = packageElement;
         }

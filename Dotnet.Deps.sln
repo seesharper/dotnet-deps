@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dotnet.Deps", "Dotnet.Deps\Dotnet.Deps.csproj", "{3F6960B3-5B87-4750-A814-8E1320BDE16B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dotnet.Deps", "src\Dotnet.Deps\Dotnet.Deps.csproj", "{3F6960B3-5B87-4750-A814-8E1320BDE16B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dotnet.Deps.Tests", "Dotnet.Deps.Tests\Dotnet.Deps.Tests.csproj", "{5C307130-1752-487A-AF51-38642104DC26}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dotnet.Deps.Tests", "src\Dotnet.Deps.Tests\Dotnet.Deps.Tests.csproj", "{5C307130-1752-487A-AF51-38642104DC26}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

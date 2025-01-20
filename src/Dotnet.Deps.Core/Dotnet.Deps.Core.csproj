@@ -14,10 +14,10 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="NuGet.Configuration" Version="6.4.0" />
-    <PackageReference Include="NuGet.Packaging" Version="6.4.0" />
-    <PackageReference Include="NuGet.Packaging.Core" Version="6.4.0" />
-    <PackageReference Include="NuGet.Protocol" Version="6.4.0" />
+    <PackageReference Include="NuGet.Configuration" Version="6.12.1" />
+    <PackageReference Include="NuGet.Packaging" Version="6.12.1" />
+    <PackageReference Include="NuGet.Packaging.Core" Version="6.9.1" />
+    <PackageReference Include="NuGet.Protocol" Version="6.12.1" />
     <PackageReference Include="ShellProgressBar" Version="5.2.0" />
   </ItemGroup>
 </Project>

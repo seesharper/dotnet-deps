@@ -1,4 +1,4 @@
-#load "nuget:Dotnet.Build, 0.16.1"
+#load "nuget:Dotnet.Build, 0.24.0"
 #load "nuget:dotnet-steps, 0.0.2"
 
 BuildContext.CodeCoverageThreshold = 80;
