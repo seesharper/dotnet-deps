@@ -93,5 +93,15 @@ namespace Dotnet.Deps.Tests
             result.ProjectFile.ShouldHaveMsBuildPackageReference("LightInject", "5.1.0");
             result.ExitCode.Should().Be(0xbad);
         }
+
+        [Fact]
+        public void ShouldIgnoreLockedDependency()
+        {
+            var result = new MsBuildTestCase()
+                .AddPackage("LightInject", "5.1.0", true)
+                .Execute();
+            result.StandardOut.Should().NotContain("LightInject 5.1.0 =>");
+            result.StandardOut.Should().Contain("LightInject 5.1.0 LOCKED 🔒");
+        }
     }
 }

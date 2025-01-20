@@ -56,6 +56,16 @@ deps --filter McMaster
 
 > The filter is applied as an regular expression
 
+### Locked dependencies
+
+If we should want to "lock" a dependency to a specific version, we can do that by adding the `Locked` attribute as shown here.
+
+```xml
+<PackageReference Include="FluentAssertions" Version="7.0.0" Locked="true"/>
+```
+
+
+
 ### Exit Code
 
 If all packages are up-to-date, `dotnet-deps` will exit with exit code `0`, otherwise `0xbad`

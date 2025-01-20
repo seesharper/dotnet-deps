@@ -86,6 +86,12 @@ namespace Dotnet.Deps.Core
                     string packageVersion = null;
                     packageVersion = packageReference.Version;
 
+                    if (packageReference.Locked)
+                    {
+                        console.WriteHighlighted($"{packageReference.Name} {packageReference.Version} LOCKED 🔒");
+                        continue;
+                    }
+
 
                     if (FloatRange.TryParse(packageVersion, out var floatRange))
                     {

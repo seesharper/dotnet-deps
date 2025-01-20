@@ -25,6 +25,13 @@ namespace Dotnet.Deps.Core.ProjectSystem
             foreach (var packageReferenceElement in packageReferenceElements)
             {
                 var packageName = packageReferenceElement.Attribute("Include")?.Value;
+                var lockedValue = packageReferenceElement.Attribute("Locked")?.Value;
+                var lockedVersion = false;
+                if (lockedValue != null)
+                {
+                    lockedVersion = bool.TryParse(lockedValue, out var locked) && locked;
+                }
+
                 if (packageName == null)
                 {
                     packageName = packageReferenceElement.Attribute("Update")?.Value;
@@ -42,8 +49,7 @@ namespace Dotnet.Deps.Core.ProjectSystem
 
                 if (FloatRange.TryParse(packageVersion, out var floatRange))
                 {
-                    var nugetVersion = floatRange.MinVersion;
-                    var nugetPackageReference = new MsBuildPackageReference(packageName, packageVersion, floatRange, packageReferenceElement);
+                    var nugetPackageReference = new MsBuildPackageReference(packageName, packageVersion, lockedVersion, floatRange, packageReferenceElement);
                     packageReferences.Add(nugetPackageReference);
                 }
                 else

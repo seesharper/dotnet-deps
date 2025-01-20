@@ -35,13 +35,13 @@ namespace Dotnet.Deps.Tests
 </Project>";
 
 
-        protected List<(string name, string version)> packageReferences = new List<(string name, string version)>();
+        protected List<(string name, string version, bool locked)> packageReferences = new List<(string name, string version, bool locked)>();
 
         protected string filter;
 
-        public MsBuildTestCase AddPackage(string name, string version = "")
+        public MsBuildTestCase AddPackage(string name, string version = "", bool pinned = false)
         {
-            packageReferences.Add((name, version));
+            packageReferences.Add((name, version, pinned));
             return this;
         }
 
@@ -57,16 +57,29 @@ namespace Dotnet.Deps.Tests
             var itemGroupElement = projectFile.Descendants("ItemGroup").Single();
             foreach (var packageReference in packageReferences)
             {
+                List<XAttribute> attributes = new List<XAttribute>();
+
                 if (string.IsNullOrWhiteSpace(packageReference.version))
                 {
-                    var packageElement = new XElement("PackageReference", new XAttribute("Include", packageReference.name));
-                    itemGroupElement.Add(packageElement);
+                    attributes.Add(new XAttribute("Include", packageReference.name));
+                    // var packageElement = new XElement("PackageReference", new XAttribute("Include", packageReference.name));
+                    //itemGroupElement.Add(packageElement);
                 }
                 else
                 {
-                    var packageElement = new XElement("PackageReference", new XAttribute("Include", packageReference.name), new XAttribute("Version", packageReference.version));
-                    itemGroupElement.Add(packageElement);
+                    attributes.Add(new XAttribute("Include", packageReference.name));
+                    attributes.Add(new XAttribute("Version", packageReference.version));
+                    // var packageElement = new XElement("PackageReference", new XAttribute("Include", packageReference.name), new XAttribute("Version", packageReference.version));
+                    //itemGroupElement.Add(packageElement);
                 }
+
+                if (packageReference.locked)
+                {
+                    attributes.Add(new XAttribute("Locked", "true"));
+                }
+
+                var packageElement = new XElement("PackageReference", attributes);
+                itemGroupElement.Add(packageElement);
             }
 
             return projectFile.ToString();
