@@ -39,6 +39,8 @@ namespace Dotnet.Deps.Tests
 
         protected string filter;
 
+        protected string minimumPackageAge;
+
         public MsBuildTestCase AddPackage(string name, string version = "", bool pinned = false)
         {
             packageReferences.Add((name, version, pinned));
@@ -51,9 +53,24 @@ namespace Dotnet.Deps.Tests
             return this;
         }
 
+        /// <summary>
+        /// Adds the <c>PackagesMinimumAge</c> property to the project file.
+        /// </summary>
+        public MsBuildTestCase WithMinimumPackageAge(string minimumPackageAge)
+        {
+            this.minimumPackageAge = minimumPackageAge;
+            return this;
+        }
+
         protected string CreateProjectFile()
         {
             XDocument projectFile = XDocument.Parse(msBuildProjectFile);
+
+            if (!string.IsNullOrEmpty(minimumPackageAge))
+            {
+                projectFile.Descendants("PropertyGroup").Single().Add(new XElement("PackagesMinimumAge", minimumPackageAge));
+            }
+
             var itemGroupElement = projectFile.Descendants("ItemGroup").Single();
             foreach (var packageReference in packageReferences)
             {

@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Dotnet.Deps.Core.ProjectSystem;
 
@@ -14,6 +15,8 @@ namespace Dotnet.Deps.Core
         }
 
         public ScriptPackageReference[] PackageReferences { get; set; }
+
+        public TimeSpan? MinimumPackageAge { get => null; }
 
         public string Path { get; }
 

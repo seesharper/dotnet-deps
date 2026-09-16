@@ -20,6 +20,8 @@ namespace Dotnet.Deps.Core
 
         private bool allowPreReleasePackages;
 
+        private TimeSpan? minimumAge;
+
         private AppConsole console = new AppConsole(TextWriter.Null, TextWriter.Null);
 
         public DependencyAnalyzer WithRootFolder(string rootFolder)
@@ -56,6 +58,16 @@ namespace Dotnet.Deps.Core
             return this;
         }
 
+        /// <summary>
+        /// Specifies the minimum age a package version must have before it is considered for an update.
+        /// Takes precedence over the <c>PackagesMinimumAge</c> property in the project file.
+        /// </summary>
+        public DependencyAnalyzer WithMinimumAge(TimeSpan? minimumAge)
+        {
+            this.minimumAge = minimumAge;
+            return this;
+        }
+
         public async Task<Result[]> Execute()
         {
             var projectCollectionLoader = new ProjectCollectionLoader(console);
@@ -70,11 +82,20 @@ namespace Dotnet.Deps.Core
 
             console.WriteNormal($"Found {allPackages.Length} package references across {projectCollection.ProjectFiles.Length} project(s)");
 
-            var latestVersions = await latestVersionProvider.GetLatestVersions(allPackageNames, rootFolder, allowPreReleasePackages);
+            var minimumAgeIsInEffect = minimumAge.HasValue || projectCollection.ProjectFiles.Any(pf => pf.MinimumPackageAge.HasValue);
+            var packageVersions = await latestVersionProvider.GetPackageVersions(allPackageNames, rootFolder, allowPreReleasePackages, minimumAgeIsInEffect);
+            var utcNow = DateTimeOffset.UtcNow;
 
             foreach (var projectFile in projectCollection.ProjectFiles)
             {
                 console.WriteHeader(projectFile.Path);
+
+                var effectiveMinimumAge = minimumAge ?? projectFile.MinimumPackageAge;
+                if (effectiveMinimumAge.HasValue && effectiveMinimumAge.Value > TimeSpan.Zero)
+                {
+                    console.WriteNormal($"Ignoring package versions published less than {MinimumAge.Format(effectiveMinimumAge.Value)} ago ⏳");
+                }
+
                 foreach (var packageReference in projectFile.PackageReferences)
                 {
                     if (!Regex.IsMatch(packageReference.Name, filter))
@@ -95,32 +116,43 @@ namespace Dotnet.Deps.Core
 
                     if (FloatRange.TryParse(packageVersion, out var floatRange))
                     {
-                        if (latestVersions.TryGetValue(packageReference.Name, out var latestVersion))
+                        if (packageVersions.TryGetValue(packageReference.Name, out var availableVersions))
                         {
+                            var latestVersion = availableVersions.GetLatestVersion(effectiveMinimumAge, utcNow);
+
                             if (!latestVersion.IsValid)
                             {
-                                console.WriteError($"Unable to find package {packageReference.Name} ({packageReference.Version})");
+                                if (availableVersions.HasVersions)
+                                {
+                                    console.WriteHighlighted($"{packageReference.Name} {packageReference.Version} - no version is older than {MinimumAge.Format(effectiveMinimumAge.Value)} ⏳");
+                                }
+                                else
+                                {
+                                    console.WriteError($"Unable to find package {packageReference.Name} ({packageReference.Version})");
+                                }
                                 continue;
                             }
+
+                            var heldBack = GetHeldBackSuffix(availableVersions, latestVersion, effectiveMinimumAge, utcNow);
 
                             if (!IsLatestVersion(floatRange, latestVersion.NugetVersion))
                             {
                                 if (updateDependencies)
                                 {
-                                    console.WriteHighlighted($"{packageReference.Name} {packageReference.Version} => {latestVersion.NugetVersion} ({latestVersion.Feed}) UPDATED 🍺");
+                                    console.WriteHighlighted($"{packageReference.Name} {packageReference.Version} => {latestVersion.NugetVersion} ({latestVersion.Feed}) UPDATED 🍺{heldBack}");
                                     packageReference.Update(latestVersion.NugetVersion.ToString());
                                     results.Add(new Result(floatRange.MinVersion.ToString(), latestVersion.NugetVersion.ToString(), true, latestVersion.Feed, projectFile.Path));
                                 }
                                 else
                                 {
                                     results.Add(new Result(floatRange.MinVersion.ToString(), latestVersion.NugetVersion.ToString(), false, latestVersion.Feed, projectFile.Path));
-                                    console.WriteHighlighted($"{packageReference.Name} {packageReference.Version} => {latestVersion.NugetVersion} ({latestVersion.Feed}) 😢");
+                                    console.WriteHighlighted($"{packageReference.Name} {packageReference.Version} => {latestVersion.NugetVersion} ({latestVersion.Feed}) 😢{heldBack}");
                                 }
                             }
                             else
                             {
                                 results.Add(new Result(floatRange.MinVersion.ToString(), latestVersion.NugetVersion.ToString(), true, latestVersion.Feed, projectFile.Path));
-                                console.WriteSuccess($"{packageReference.Name} {packageReference.Version} {latestVersion.NugetVersion} ({latestVersion.Feed}) 🍺");
+                                console.WriteSuccess($"{packageReference.Name} {packageReference.Version} {latestVersion.NugetVersion} ({latestVersion.Feed}) 🍺{heldBack}");
                             }
                         }
                     }
@@ -145,6 +177,22 @@ namespace Dotnet.Deps.Core
             }
 
             return results.ToArray();
+        }
+
+        private static string GetHeldBackSuffix(PackageVersions availableVersions, LatestVersion latestVersion, TimeSpan? effectiveMinimumAge, DateTimeOffset utcNow)
+        {
+            if (!effectiveMinimumAge.HasValue || effectiveMinimumAge.Value <= TimeSpan.Zero)
+            {
+                return string.Empty;
+            }
+
+            var newestVersion = availableVersions.GetLatestVersion(null, utcNow);
+            if (newestVersion.IsValid && newestVersion.NugetVersion > latestVersion.NugetVersion)
+            {
+                return $" (holding back {newestVersion.NugetVersion} ⏳)";
+            }
+
+            return string.Empty;
         }
 
         private bool IsLatestVersion(FloatRange currentVersion, NuGetVersion latestVersion)

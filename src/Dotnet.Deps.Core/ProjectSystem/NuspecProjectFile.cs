@@ -1,3 +1,4 @@
+using System;
 using System.Xml.Linq;
 
 namespace Dotnet.Deps.Core.ProjectSystem
@@ -17,6 +18,8 @@ namespace Dotnet.Deps.Core.ProjectSystem
         }
 
         public NuspecPackageReference[] PackageReferences { get; set; }
+
+        public TimeSpan? MinimumPackageAge { get => null; }
 
         public string Path { get; }
 
