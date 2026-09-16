@@ -25,16 +25,29 @@ namespace Dotnet.Deps
             var versionOption = app.VersionOption("-v | --version", GetVersion());
             var preReleaseOption = app.Option("-p ||--pre", "Allow prerelease packages", CommandOptionType.NoValue);
             var updateOption = app.Option("-u ||--update", "Update packages to their latest versions", CommandOptionType.NoValue);
+            var minAgeOption = app.Option("-ma | --min-age", "Minimum age of a package version before it is considered for an update. E.g. 2d (days) or 12h (hours). Defaults to days when no suffix is given.", CommandOptionType.SingleValue);
             var helpOption = app.HelpOption("-h | --help");
 
             app.OnExecuteAsync(async cancellationToken =>
             {
+                TimeSpan? minimumAge = null;
+                if (minAgeOption.HasValue())
+                {
+                    if (!MinimumAge.TryParse(minAgeOption.Value(), out var parsedMinimumAge))
+                    {
+                        console.WriteError($"Invalid value '{minAgeOption.Value()}' for the --min-age option. Expected for instance 2d (days), 12h (hours) or 2 (days).");
+                        return 1;
+                    }
+                    minimumAge = parsedMinimumAge;
+                }
+
                 var results = await new DependencyAnalyzer()
                     .WithRootFolder(cwd.HasValue() ? cwd.Value() : Directory.GetCurrentDirectory())
                     .WithConsoleOutput(console)
                     .WithFilter(filterOption.Value())
                     .WithPreReleaseOption(preReleaseOption.HasValue())
                     .WithUpdateOption(updateOption.HasValue())
+                    .WithMinimumAge(minimumAge)
                     .Execute();
                 return results.Any(r => !r.IsLatestVersion) ? 0xbad : 0;
             });

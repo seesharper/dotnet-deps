@@ -56,6 +56,42 @@ deps --filter McMaster
 
 > The filter is applied as an regular expression
 
+### Minimum package age
+
+Brand new package versions are sometimes best left to simmer for a little while. The `--min-age` (`-ma`) option makes `dotnet-deps` ignore versions that were published too recently.
+
+```shell
+deps --min-age 2d
+```
+
+The value is a number followed by an optional suffix.
+
+| Value | Meaning |
+| ----- | ------- |
+| `2d`  | Ignore versions published less than 2 days ago |
+| `12h` | Ignore versions published less than 12 hours ago |
+| `2`   | Same as `2d`. Without a suffix we default to days |
+
+When a newer version is held back, the version we *would* have picked is reported like this.
+
+```shell
+LightInject 7.0.1 7.0.1 (nuget.org) 🍺 (holding back 7.1.0 ⏳)
+```
+
+The minimum age can also be specified in the project file using the `PackagesMinimumAge` property.
+
+```xml
+<PropertyGroup>
+  <PackagesMinimumAge>2d</PackagesMinimumAge>
+</PropertyGroup>
+```
+
+The `--min-age` option takes precedence over `PackagesMinimumAge` when both are present.
+
+> `PackagesMinimumAge` must be declared in the same file as the package references. Just like for `<PackageReference>` nodes, `dotnet-deps` does not evaluate MSBuild and will not pick up the property from an imported file such as `Directory.Build.props`.
+
+> Feeds that do not report a publish date for a version (some local and private feeds) will never have that version held back.
+
 ### Locked dependencies
 
 If we should want to "lock" a dependency to a specific version, we can do that by adding the `Locked` attribute as shown here.

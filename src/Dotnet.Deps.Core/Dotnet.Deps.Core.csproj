@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PackageTags>dotnet;cli;csx;nuget;tool</PackageTags>
     <PackageProjectUrl>https://github.com/seesharper/dotnet-deps</PackageProjectUrl>
@@ -10,7 +10,7 @@
     <RepositoryUrl>https://github.com/seesharper/dotnet-deps.git</RepositoryUrl>
     <Authors>Bernhard Richter</Authors>
     <Description>A simple library that can be used to analyze and update NuGet dependencies.</Description>
-    <Version>2.1.2</Version>
+    <Version>2.2.0</Version>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>

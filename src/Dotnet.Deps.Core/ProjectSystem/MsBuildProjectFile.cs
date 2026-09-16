@@ -1,3 +1,4 @@
+using System;
 using System.Xml.Linq;
 
 namespace Dotnet.Deps.Core.ProjectSystem
@@ -10,13 +11,20 @@ namespace Dotnet.Deps.Core.ProjectSystem
         private readonly XDocument msBuildProjectFile;
 
 
-        public MsBuildProjectFile(XDocument msBuildProjectFile, string path)
+        public MsBuildProjectFile(XDocument msBuildProjectFile, string path) : this(msBuildProjectFile, path, null)
+        {
+        }
+
+        public MsBuildProjectFile(XDocument msBuildProjectFile, string path, TimeSpan? minimumPackageAge)
         {
             this.msBuildProjectFile = msBuildProjectFile;
             Path = path;
+            MinimumPackageAge = minimumPackageAge;
         }
 
         public MsBuildPackageReference[] PackageReferences { get; set; }
+
+        public TimeSpan? MinimumPackageAge { get; }
 
         public string Path { get; }
 

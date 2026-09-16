@@ -1,3 +1,5 @@
+using System;
+
 namespace Dotnet.Deps.Core.ProjectSystem
 {
     /// <summary>
@@ -10,6 +12,12 @@ namespace Dotnet.Deps.Core.ProjectSystem
         /// </summary>
         /// <value></value>
         TPackageReference[] PackageReferences { get; }
+
+        /// <summary>
+        /// Gets the minimum age a package version must have before it is considered for an update
+        /// or <c>null</c> if the project file does not specify it.
+        /// </summary>
+        TimeSpan? MinimumPackageAge { get; }
 
         /// <summary>
         /// Saves the project file.
